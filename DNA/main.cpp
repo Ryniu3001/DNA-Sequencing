@@ -12,15 +12,9 @@ int main()
     cin >> GraphClass::maxWeight;
     cout << endl;
 
-    BruteForceClass BF(GraphClass::vertex);
-
     Graph.create();
     Graph.print();
     cout << endl;
-
-
-//    BF.start(0,0,GraphClass::vertex);
-//    BF.result(GraphClass::vertex);
 
 /////////////////  GENETIC ///////////////////
     GeneticClass Genetic;

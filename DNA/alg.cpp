@@ -6,69 +6,6 @@
 #include <conio.h>
 using namespace std;
 
-
-BruteForceClass::BruteForceClass(int v){
-    visited = (bool*) calloc (v,sizeof(bool));
-    optPath = (int*) calloc (v,sizeof(int));
-    path = (int*) calloc (v,sizeof(int));
-    l=0;
-}
-
-void BruteForceClass::start(int x, int time,int v){ // time - czas aktualnie przebytej drogi / v - ilosc miast
-    //s=s+1;
-    path[l++] = x; // x - aktualnie rozpatrywane miasto
-
-    if (l != v){
-        visited[x] = true;   // zaznacz miasto x jako odwiedzone
-        for (int i=0; i<v; i++) // szukamy nastepnego do odwiedzenia
-            if (!visited[i])
-                start(i,time+GraphClass::matrix[x][i],v);
-        visited[x] = false; // Przy wychodzeniu z rekurencji usuwamy znacznik odwiedzenia
-    }
-    else if (l == v){
-        if ((optTime == 0) || (optTime > time+GraphClass::matrix[x][0])){ //Porownuje najmniejszy czas z aktualnie wyznaczonym
-            optTime = time+GraphClass::matrix[x][0];
-            for (int j=0; j<v; j++)
-                optPath[j] = path[j];
-        }
-    }
-    l--;
-};
-
-//void BruteForceClass::start(int v){ // wersja bez rekurencji, wolniejsza?!
-//    int tab[v];
-//    int j;
-//    optTime = 0;
-//    int time=0;
-//    for (int i=0; i<v; i++)
-//        tab[i] = i;
-//    do{
-//        if ((time < optTime) || (optTime==0)){
-//            for (int i=0; i<v; i++)
-//                optPath[i] = tab[i];
-//            optTime = time;
-//        }
-//        time=0;
-//        for (j=0; j<v-1; j++){
-//            time += GraphClass::matrix[tab[j]][tab[j+1]];
-//        }
-//        time += GraphClass::matrix[tab[j]][tab[0]];
-//
-//    }while (next_permutation(tab,tab+v));
-//};
-
-void BruteForceClass::result(int v){
-    cout << "\nMinimalny czas: " << optTime << endl;
-    for (int i=0; i<v; i++)
-        cout << optPath[i] << " ";
-    cout << endl;}
-
-BruteForceClass::~BruteForceClass(){
-    free(visited);
-    free(optPath);
-    free(path);
-}
-
 void GeneticClass::DrawingPopulation(int liczbaChromosomow){
     chromosom = (short int**) calloc (liczbaChromosomow,sizeof(short int*)); // tablica chromosomow
     for (int i=0; i<liczbaChromosomow; i++)

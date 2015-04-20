@@ -1,20 +1,6 @@
 #ifndef alg_hpp
 #define alg_hpp
 
-class BruteForceClass{
-private:
-    int optTime,l; //optymalny czas, licznik w tablicy z optymalna droga,
-    int *optPath;
-    bool *visited;
-    int *path;
-public:
-    BruteForceClass(int v);
-    void start(int x,int time,int v);
-    void result(int v);
-    ~BruteForceClass();
-
-};
-
 struct ListStruct{
     int value;
     ListStruct *next;
