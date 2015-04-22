@@ -3,6 +3,7 @@
 #include "graf.hpp"
 #include "alg.hpp"
 #include "Loader.h"
+#include <ctime>
 
 using namespace std;
 vector<string> Loader::data = initializer_list<string>();
@@ -11,21 +12,26 @@ vector<string> Loader::data = initializer_list<string>();
 int main()
 {
 	Loader::readFromFile();
-	//Loader::show();			odwolujesz siê Loader::data[i] i musisz miec #include "Loader.h"
+	//Loader::show();			//odwolujesz siê Loader::data[i] i musisz miec #include "Loader.h"
+
 
     cout << "Podaj liczbe wierzcholkow: ";
-    cin >> GraphClass::vertex;
-    cout << "Podaj max wage: ";
-    cin >> GraphClass::maxWeight;
-    cout << endl;
-
+    
+	GraphClass::vertex = Loader::data.size();
     Graph.create();
-    //Graph.print();
+
+	std::clock_t    start;
+	std::clock_t    stop;
+	start = std::clock();
+	Graph.calculateWeight(Loader::data);
+	stop = std::clock();
+	std::cout << "Time: " << (stop-start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
+   // Graph.print();
     cout << endl;
 
 /////////////////  GENETIC ///////////////////
-    GeneticClass Genetic;
-    Genetic.Interface();
+   // GeneticClass Genetic;
+   // Genetic.Interface();
     return 0;
 }
 

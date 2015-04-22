@@ -2,12 +2,13 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
+#include <string>
+#include <vector>
 #include "Loader.h"
 
 using namespace std;
 
 int GraphClass::vertex;
-int GraphClass::maxWeight;
 int **GraphClass::matrix;
 
 GraphClass Graph;
@@ -17,12 +18,30 @@ void GraphClass::create(){
     for (int i=0;i<vertex;i++)
         matrix[i] = (int*) calloc (vertex, sizeof(int));
 //Losowanie wag
-    srand(time(NULL));
-    for (int i=0; i<vertex; i++)
-        for (int j=i+1; j<vertex; j++){
-            matrix[i][j] = 1 + rand() % maxWeight;
-            matrix[j][i] = matrix[i][j];
-        }
+};
+
+void GraphClass::calculateWeight(const vector<string> &data){
+	for (int i = 0; i < data.size(); i++)
+	{
+		for (int j = 0; j < data.size(); j++)
+		{
+			if (i != j)
+			{
+				for (int k = 0; k < GraphClass::DEPTH; k++)
+				{
+					int d = k + 1;
+					string subStr = data[i].substr(d, data[i].length() - d);
+					string subStr2 = data[j].substr(0, data[j].length() - d);
+					if (subStr.compare(subStr2) == 0)
+					{
+						matrix[i][j] = d;
+						break;
+					}
+				}
+			}
+		}
+
+	}
 };
 
 void GraphClass::print(){
