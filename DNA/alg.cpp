@@ -140,7 +140,7 @@ void GeneticClass::Interface(){
 
     int P,M,score=0,k=0;                // P - licznik nowej populacji, M-ilosc mutacji, score - najlepszy czas przebycia drogi w danej populacji
     short int **tmp;
-    lc = 70000;                                                        // populacja
+    lc = 5000;                                                        // populacja
     short int *path;
     int p=-1;
     path = (short int*) calloc (GraphClass::vertex,sizeof(short int)); // Kolejnosc miast w najelpszym rozwiazaniu

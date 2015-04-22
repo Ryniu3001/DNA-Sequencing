@@ -2,10 +2,17 @@
 #include <stdlib.h>
 #include "graf.hpp"
 #include "alg.hpp"
+#include "Loader.h"
 
 using namespace std;
+vector<string> Loader::data = initializer_list<string>();
+
+
 int main()
 {
+	Loader::readFromFile();
+	//Loader::show();			odwolujesz siê Loader::data[i] i musisz miec #include "Loader.h"
+
     cout << "Podaj liczbe wierzcholkow: ";
     cin >> GraphClass::vertex;
     cout << "Podaj max wage: ";
@@ -13,7 +20,7 @@ int main()
     cout << endl;
 
     Graph.create();
-    Graph.print();
+    //Graph.print();
     cout << endl;
 
 /////////////////  GENETIC ///////////////////
@@ -21,3 +28,5 @@ int main()
     Genetic.Interface();
     return 0;
 }
+
+
