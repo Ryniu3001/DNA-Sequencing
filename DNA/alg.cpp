@@ -12,9 +12,13 @@ void GeneticClass::DrawingPopulation(int liczbaChromosomow){
        chromosom[i] = (short int*) calloc (GraphClass::vertex,sizeof(short int));
 
     srand(time(NULL));
-    for (int i=0; i<liczbaChromosomow; i++)
+ /*   for (int i=0; i<liczbaChromosomow; i++)
         for (int j=0; j<GraphClass::vertex; j++)
-            chromosom[i][j] = rand() % (GraphClass::vertex-j); // Kodowanie chromosomow z lista odniesienia
+            chromosom[i][j] = rand() % (GraphClass::vertex-j);*/ // Kodowanie chromosomow z lista odniesienia
+
+	for (int i = 0; i<liczbaChromosomow; i++)
+		for (int j = 0; j<GraphClass::vertex; j++)
+			chromosom[i][j] = rand() % (GraphClass::vertex - j);
 
     ratings = (int*) calloc (liczbaChromosomow,sizeof(int)); // tablica do przechowywania ocen kazdego osobnika
 
@@ -99,8 +103,8 @@ int GeneticClass::Rating(int liczbaChromosomow, int *bestChromosom)
             *bestChromosom = i;
         }
     }
-//    for (int i=0;i<liczbaChromosomow;i++) // Wypisanie ocen populacji
-//        cout << ratings[i] << endl;
+    //for (int i=0;i<liczbaChromosomow;i++) // Wypisanie ocen populacji
+    //    cout << ratings[i] << endl;
 return bestRating;
 }
 
@@ -163,9 +167,9 @@ void GeneticClass::Interface(){
     //if(kbhit()) break; // Przerwanie przy wcisnieciu klawisza
         P=-1;
         while (P < lc-2){
-            parent1 = TournamentSelection(5,lc);
+            parent1 = TournamentSelection(20,lc);
             do
-                parent2 = TournamentSelection(5,lc);
+                parent2 = TournamentSelection(20,lc);
             while (parent1 == parent2);
             Crossover(parent1,parent2,children[++P],children[++P]);
         }

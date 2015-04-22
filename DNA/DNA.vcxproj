@@ -13,12 +13,14 @@
   <ItemGroup>
     <ClCompile Include="alg.cpp" />
     <ClCompile Include="graf.cpp" />
+    <ClCompile Include="Greedy.cpp" />
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="alg.hpp" />
     <ClInclude Include="graf.hpp" />
+    <ClInclude Include="Greedy.h" />
     <ClInclude Include="Loader.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

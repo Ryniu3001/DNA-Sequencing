@@ -4,6 +4,7 @@
 #include "alg.hpp"
 #include "Loader.h"
 #include <ctime>
+#include "Greedy.h"
 
 using namespace std;
 vector<string> Loader::data = initializer_list<string>();
@@ -26,12 +27,16 @@ int main()
 	Graph.calculateWeight(Loader::data);
 	stop = std::clock();
 	std::cout << "Time: " << (stop-start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
-   // Graph.print();
+   //Graph.print();
     cout << endl;
 
+	Greedy GR;
+	GR.start(0, 0);
+	GR.printResult();
 /////////////////  GENETIC ///////////////////
-   // GeneticClass Genetic;
-   // Genetic.Interface();
+    
+	GeneticClass Genetic;
+    Genetic.Interface();
     return 0;
 }
 

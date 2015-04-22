@@ -7,7 +7,7 @@ using namespace std;
 
 class GraphClass{
 public:
-	static const int DEPTH = 4;
+	static const int DEPTH = 7;
     static int vertex;    
     static int **matrix;
     void create();			//Tworzenie grafu

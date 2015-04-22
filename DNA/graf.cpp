@@ -42,6 +42,15 @@ void GraphClass::calculateWeight(const vector<string> &data){
 		}
 
 	}
+
+	for (int i = 0; i < Loader::data.size(); i++)		//TYMCZASOWE rozwiazanie aby algortym nie bral pod uwage krawedzi z wag¹ 0. Jesli wezmie to bedzie to od razu widac po sumie wag.
+	{
+		for (int j = 0; j < Loader::data.size(); j++)
+		{
+			if (matrix[i][j] == 0)
+				matrix[i][j] = 1000;
+		}
+	}
 };
 
 void GraphClass::print(){
