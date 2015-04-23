@@ -31,22 +31,21 @@ void GeneticClass::DrawingPopulation(int liczbaChromosomow){
 	for (int i = 0; i < liczbaChromosomow; i++)
 	{
 		vector <bool> visited(GraphClass::vertex);
-		for (int g = 0; g<visited.size(); g++)
+		for (int g = 0; g<visited.size(); g++)		//vektor odzwiedzonych
 			visited[g] = false;
-		chromosom[i][0] = rand() % GraphClass::vertex;
+		chromosom[i][0] = rand() % GraphClass::vertex;	//wypelnianie pierwszego wierzcholka w chromosomie
 		visited[chromosom[i][0]] = true;
 
 		for (int j = 1; j < GraphClass::vertex; j++)
 		{
 			bool found = false;
 			int siz = tmp[chromosom[i][j - 1]].size();
-			int chr1 = chromosom[i][j - 1];
-			if (siz != 0)
+			if (siz != 0)									// jesli ma jakies pasujace nastepniki
 			{
 				int poprzednik = chromosom.at(i).at(j - 1);
 				for (int pos = 0; pos < siz; pos++){
-					bool tm = visited[tmp[poprzednik][pos]];
-					if (!visited[tmp[poprzednik][pos]]){
+
+					if (!visited[tmp[poprzednik][pos]]){			//wybierz pierwszego nastepnika z listy i sprawdz czy byl juz odwiedzony
 						//printf("%d %d\n", j,tm);
 						chromosom[i][j] = tmp[poprzednik][pos];
 						visited[chromosom[i][j]] = true;
@@ -54,7 +53,7 @@ void GeneticClass::DrawingPopulation(int liczbaChromosomow){
 						break;
 					}
 				}
-				if (!found)
+				if (!found)		//jeœli wszystkie na liscie nastepniko byly juz wczesniej odwiedzone dobierz losowo nieodwiedzony wierzcholek
 				{
 					//printf("Nie dopasowano nastepnika ?! %d %d %d \n", i, j, chromosom[i][j - 1]);
 					//chromosom[i][j] = rand() % GraphClass::vertex;
@@ -77,7 +76,7 @@ void GeneticClass::DrawingPopulation(int liczbaChromosomow){
 					chromosom[i][j] = l;
 					break;
 				}
-				//printf("Wierzcholek %d nie ma nastepnikow !!??!!?? %d %d\n", chromosom[i][j - 1], i, j - 1);
+				printf("Wierzcholek %d nie ma nastepnikow !!??!!?? %d %d\n", chromosom[i][j - 1], i, j - 1);
 			}
 		}
 		}
