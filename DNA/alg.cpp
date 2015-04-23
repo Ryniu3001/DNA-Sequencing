@@ -147,11 +147,11 @@ int GeneticClass::removeFromList(int a){
 }
 
 //Zwraca najelepszy czas drogi.
-int GeneticClass::Rating(int liczbaChromosomow, int *bestChromosom)
+int GeneticClass::Rating()
 {
 	int bestRating = 0;
 	int sum, from, to, startFrom;
-	for (int i = 0; i<liczbaChromosomow; i++){
+	for (int i = 0; i<lc; i++){
 		sum = 0;
 		CreateList();
 		from = removeFromList(chromosom[i][0]); //Poczatek drogi (pierwszy wierzcholek)
@@ -167,11 +167,17 @@ int GeneticClass::Rating(int liczbaChromosomow, int *bestChromosom)
 			sum += 500000;
 		if ((bestRating > sum) || (bestRating == 0)){ // Zapamietuje najlepszy wynik (ocene)
 			bestRating = sum;
-			*bestChromosom = i;
+			bestChromosom = i;
 		}
 	}
 	//for (int i=0;i<liczbaChromosomow;i++) // Wypisanie ocen populacji
 	//    cout << ratings[i] << endl;
+
+	if (bestScoreInAll > bestRating){
+		bestScoreInAll = bestRating;
+		bestChromosomInAll = bestChromosom;
+	}
+
 	return bestRating;
 }
 
@@ -204,15 +210,7 @@ void GeneticClass::Mutation(vector<int> chromosome){
 	chromosome[target] = rand() % (GraphClass::vertex - target);
 }
 
-////////////////////////////////////////////////////////////////////////////
-///////////////////////////////  INTERFACE  ////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-void GeneticClass::Interface(){
-
-	int P, M, score = 0, k = 0, p = -1;;                // P - licznik nowej populacji, M-ilosc mutacji, score - najlepszy czas przebycia drogi w danej populacji
-	lc = 1000;                                          // populacja
-	vector<int> path;
-	vector<vector<int>> tmp;
+void GeneticClass::initializeVectors(){
 	for (int i = 0; i < GraphClass::vertex; i++)
 		path.push_back(0);											// Kolejnosc miast w najelpszym rozwiazaniu
 	for (int i = 0; i < lc; i++){
@@ -221,21 +219,37 @@ void GeneticClass::Interface(){
 			row.push_back(0);
 		children.push_back(row);
 	}
+}
 
-	DrawingPopulation(lc);
+void GeneticClass::showBest(){
+	cout << "\nGenetic best score: " << bestScoreInAll << "\n";
+	CreateList();
+	for (int i = 0; i<GraphClass::vertex; i++){
+		path[i] = removeFromList(chromosom[bestChromosomInAll][i]);
+		cout << path[i] << " ";
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////
+///////////////////////////////  INTERFACE  ////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+void GeneticClass::Interface(){
+	lc = 1000;                                  // populacja
+	bestScoreInAll = 0;
+	bestChromosom = -1;
+	int algorithmIteration = 50;
+	int score = 0;								// score - najlepszy czas przebycia drogi w danej populacji
 	int parent1, parent2;
 
-	score = Rating(lc, &p);
-	bestScoreInAll = score;
-	bestChromosomInAll = p;
+	initializeVectors();
+	DrawingPopulation(lc);
 
-	cout << "\nRodzice: " << score;                    // Ocena rodzicow
+	Rating();
+	cout << "Rodzice: " << bestScoreInAll << endl;
 
-	////////////// SELEKCJA I KRZYZOWANIE ///////////////////////////////
-	for (int z = 0; z<50; z++){
-		// while (1){
-		//if(kbhit()) break; // Przerwanie przy wcisnieciu klawisza
-		P = -1;
+	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
+	for (int z = 0; z<algorithmIteration; z++){
+		int P = -1;		                            // licznik nowej populacji
 		while (P < lc - 2){
 			parent1 = TournamentSelection(10, lc);
 			do
@@ -244,35 +258,18 @@ void GeneticClass::Interface(){
 			Crossover(parent1, parent2, children[++P], children[++P]);
 		}
 
-		///////////// MUTACJA  /////////////////////////////////////////
-		M = P / 2;
-		for (int i = 0; i<M; i++){
+		int mutationIteration = P / 2;
+		for (int i = 0; i<mutationIteration; i++){
 			int target2 = (rand()*rand()) % lc;
 			Mutation(children[target2]);
 		}
-		///////////////////////////////////////////////////////////////
-		tmp = chromosom;
+
 		chromosom = children;
-		children = tmp;
-
-		score = Rating(lc, &p);
-		if (bestScoreInAll > score){
-			bestScoreInAll = score;
-			bestChromosomInAll = p;
-		}
-
-		cout << "\nPopulacja " << k++ << " " << score;
-	}
-	////////// WYNIK ///////////////////////////////////////////////
-	cout << "\nGenetic best score: " << bestScoreInAll << "\n";
-	CreateList();
-	for (int i = 0; i<GraphClass::vertex; i++){
-		path[i] = removeFromList(chromosom[bestChromosomInAll][i]);
-		cout << path[i] << " ";
+		score = Rating();
+		cout << "Populacja " << z << " " << score << endl;
 	}
 
-	cin.sync(); //kasowanie zbędnych znaków z bufora
-	cin.get(); //oczekiwanie na wciśnięcie klawisza
+	showBest();
 }
 
 GeneticClass::~GeneticClass(){
