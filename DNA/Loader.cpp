@@ -19,6 +19,8 @@ void Loader::readFromFile(){
 		if (!line.empty())
 			Loader::data.push_back(line);
 	}
+
+	cout << fileName << endl;
 }
 
 
