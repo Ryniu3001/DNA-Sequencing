@@ -1,12 +1,4 @@
-#include "graf.hpp"
 #include "alg.hpp"
-#include <stdlib.h>
-#include <iostream>
-#include <time.h>
-#include <conio.h>
-#include <list>
-#include "Loader.h" //Do testow
-using namespace std;
 
 void GeneticClass::DrawingPopulation(int liczbaChromosomow){
     chromosom = (short int**) calloc (liczbaChromosomow,sizeof(short int*)); // tablica chromosomow
