@@ -19,7 +19,7 @@ void GeneticClass::DrawingPopulation(int liczbaChromosomow){
 
 	vector< vector <int> > tmp(GraphClass::vertex);
 
-	for (int i = 0; i <GraphClass::vertex; i++)
+	for (int i = 0; i <GraphClass::vertex; i++)		// Tworzenie wektora wierzcholkow, kazdy wierzcholek ma wektor wierzcholkow ktore pasuja do niego i maja ocene mniejsza od 1000
 	{
 		for (int j = 0; j < GraphClass::vertex; j++)
 		{
@@ -121,7 +121,7 @@ void GeneticClass::DrawingPopulation(int liczbaChromosomow){
 
 //Lista odniesienia
 void GeneticClass::CreateList(){
-	for (int i = 1; i<GraphClass::vertex; i++){
+	for (int i = 0; i<GraphClass::vertex; i++){
 		head.push_back(i);
 	}
 }
@@ -134,7 +134,6 @@ void GeneticClass::PrintList(){
 
 int GeneticClass::removeFromList(int a){
 	int value = 0;
-	a = 0;
 	if (head.size() > 0){
 		list<int>::iterator iter = head.begin();
 		for (int i = 0; i < a - 1; i++){
@@ -163,15 +162,14 @@ int GeneticClass::Rating()
 		}
 		sum += GraphClass::matrix[to][startFrom];
 		ratings[i] = sum;
-		if (sum > 100000)
-			sum += 500000;
+		
 		if ((bestRating > sum) || (bestRating == 0)){ // Zapamietuje najlepszy wynik (ocene)
 			bestRating = sum;
 			bestChromosom = i;
 		}
 	}
-	//for (int i=0;i<liczbaChromosomow;i++) // Wypisanie ocen populacji
-	//    cout << ratings[i] << endl;
+//	for (int i=0;i<lc;i++) // Wypisanie ocen populacji
+//	    cout << ratings[i] << endl;
 
 	if (bestScoreInAll > bestRating){
 		bestScoreInAll = bestRating;
@@ -192,7 +190,7 @@ int GeneticClass::TournamentSelection(int x, int liczbaChromosomow){
 	return best;
 }
 
-void GeneticClass::Crossover(int par1, int par2, vector<int> child1, vector<int> child2){
+void GeneticClass::Crossover(int par1, int par2, vector<int> &child1, vector<int> &child2){
 	for (int i = 0; i <= (GraphClass::vertex / 2); i++){
 		child1[i] = chromosom[par1][i];
 		child2[i] = chromosom[par2][i];
@@ -204,7 +202,7 @@ void GeneticClass::Crossover(int par1, int par2, vector<int> child1, vector<int>
 	}
 }
 
-void GeneticClass::Mutation(vector<int> chromosome){
+void GeneticClass::Mutation(vector<int> &chromosome){
 	short int target;
 	target = rand() % GraphClass::vertex;
 	chromosome[target] = rand() % (GraphClass::vertex - target);
@@ -244,7 +242,7 @@ void GeneticClass::Interface(){
 	initializeVectors();
 	DrawingPopulation(lc);
 
-	Rating();
+	bestScoreInAll = Rating();
 	cout << "Rodzice: " << bestScoreInAll << endl;
 
 	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
@@ -264,7 +262,8 @@ void GeneticClass::Interface(){
 			Mutation(children[target2]);
 		}
 
-		chromosom = children;
+		chromosom.swap(children); //TODO Dlaczego tutaj children to same 0 ?? 
+
 		score = Rating();
 		cout << "Populacja " << z << " " << score << endl;
 	}
