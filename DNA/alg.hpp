@@ -17,13 +17,14 @@ struct ListStruct{
 
 class GeneticClass{
 private:
-    short int ** chromosom;
-    short int ** children;
-    int *ratings;
-	ListStruct *head;
-	
+	vector<vector<int>> chromosom;
+	vector<vector<int>> children;
+    vector<int> ratings;
+
+	list<int> head;	
     void CreateList();
     int removeFromList(int a);
+	void PrintList();
 
 	int lc; // populacja
 	int bestScoreInAll;
@@ -31,12 +32,10 @@ private:
 
 	void DrawingPopulation(int liczbaChromosomow);
     int Rating(int liczbaChromosomow, int *bestChromosom);
-    void Crossover(int par1, int par2, short int child1[], short int child2[]);
-    void Mutation(short int chomosome[]);
+	void Crossover(int par1, int par2, vector<int> child1, vector<int> child2);
+	void Mutation(vector<int> chomosome);
     int TournamentSelection(int x,int liczbaChromosomow); //x - liczba chromosow w turnieju
-
-	void PrintList();
-
+	
 public:
     void Interface();
     ~GeneticClass();

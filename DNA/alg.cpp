@@ -1,9 +1,12 @@
 #include "alg.hpp"
 
 void GeneticClass::DrawingPopulation(int liczbaChromosomow){
-    chromosom = (short int**) calloc (liczbaChromosomow,sizeof(short int*)); // tablica chromosomow
-    for (int i=0; i<liczbaChromosomow; i++)
-       chromosom[i] = (short int*) calloc (GraphClass::vertex,sizeof(short int));
+	for (int i = 0; i < liczbaChromosomow; i++){
+		vector<int> row;
+		for (int j = 0; j < GraphClass::vertex; j++)
+			row.push_back(0);
+		chromosom.push_back(row);
+	}
 
     srand(time(NULL));
  /*   for (int i=0; i<liczbaChromosomow; i++)
@@ -65,8 +68,8 @@ void GeneticClass::DrawingPopulation(int liczbaChromosomow){
 	}
 	/////////////////STOP: NIEOPTYMALNY KOD DO PRZETESTOWANIA WYNIKU ////////////////////////
 			
-
-    ratings = (int*) calloc (liczbaChromosomow,sizeof(int)); // tablica do przechowywania ocen kazdego osobnika
+	for (int i = 0; i < liczbaChromosomow; i++)
+		ratings.push_back(0); // vector do przechowywania ocen kazdego osobnika
 
 
 //    for (int i=0;i<liczbaChromosomow;i++){      // Wypisywanie chromosomow (zakodowanych)
@@ -80,51 +83,29 @@ void GeneticClass::DrawingPopulation(int liczbaChromosomow){
 
 //Lista odniesienia
 void GeneticClass::CreateList(){
-    head = (ListStruct*) calloc (1,sizeof(ListStruct));
-    head->value = 0;
-    ListStruct *tmp;
-    tmp = head;
-
     for (int i=1; i<GraphClass::vertex; i++){
-        tmp->next = (ListStruct*) calloc (1,sizeof(ListStruct));
-        tmp = tmp->next;
-        tmp->value = i;
+        head.push_back(i);
     }
 }
 
 void GeneticClass::PrintList(){
-    cout << endl;
-    ListStruct *tmp;
-    tmp = head;
-    while (tmp != NULL){
-        cout << tmp->value << " ";
-        tmp = tmp->next;
-    }
+	for (list<int>::iterator iter = head.begin(); iter != head.end(); iter++)
+		cout << *iter << " ";
     cout << endl;
 }
 
 int GeneticClass::removeFromList(int a){
-    int b;
-    ListStruct *tmp;
-    ListStruct *beforeTmp = 0;
-    tmp = head;
-
-    if (a==0){
-        b = head->value;
-        tmp=head->next;
-        free(head);
-        head = tmp;
-    }
-    else{
-        for (int i=0; i<a; i++){
-            beforeTmp = tmp;
-            tmp = tmp->next;
-        }
-        b = tmp->value;
-        beforeTmp->next = tmp->next;
-        free(tmp);
-    }
-return b;
+    int value = 0;
+	a = 0;
+	if (head.size() > 0){
+		list<int>::iterator iter = head.begin();
+		for (int i = 0; i < a - 1; i++){
+			iter++;
+		}
+		value = *iter;
+		head.erase(iter);
+	}
+	return value;
 }
 
 //Zwraca najelepszy czas drogi.
@@ -167,7 +148,7 @@ int GeneticClass::TournamentSelection(int x,int liczbaChromosomow){
 return best;
 }
 
-void GeneticClass::Crossover(int par1, int par2, short int child1[], short int child2[]){
+void GeneticClass::Crossover(int par1, int par2, vector<int> child1, vector<int> child2){
     for (int i=0; i<=(GraphClass::vertex/2);i++){
         child1[i] = chromosom[par1][i];
         child2[i] = chromosom[par2][i];
@@ -179,7 +160,7 @@ void GeneticClass::Crossover(int par1, int par2, short int child1[], short int c
     }
 }
 
-void GeneticClass::Mutation(short int chromosome[]){
+void GeneticClass::Mutation(vector<int> chromosome){
     short int target;
     target = rand() % GraphClass::vertex;
     chromosome[target] = rand() % (GraphClass::vertex - target);
@@ -190,15 +171,18 @@ void GeneticClass::Mutation(short int chromosome[]){
 ////////////////////////////////////////////////////////////////////////////
 void GeneticClass::Interface(){
 
-    int P,M,score=0,k=0;                // P - licznik nowej populacji, M-ilosc mutacji, score - najlepszy czas przebycia drogi w danej populacji
-    short int **tmp;
-    lc = 1000;                                                        // populacja
-    short int *path;
-    int p=-1;
-    path = (short int*) calloc (GraphClass::vertex,sizeof(short int)); // Kolejnosc miast w najelpszym rozwiazaniu
-    children = (short int**) calloc (lc,sizeof(short int*));
-    for (int i=0; i<lc; i++)
-       children[i] = (short int*) calloc (GraphClass::vertex,sizeof(short int));
+	int P, M, score = 0, k = 0, p = -1;;                // P - licznik nowej populacji, M-ilosc mutacji, score - najlepszy czas przebycia drogi w danej populacji
+    lc = 1000;                                          // populacja
+	vector<int> path;
+	vector<vector<int>> tmp;
+	for (int i = 0; i < GraphClass::vertex; i++)
+		path.push_back(0);											// Kolejnosc miast w najelpszym rozwiazaniu
+	for (int i = 0; i < lc; i++){
+		vector<int> row;
+		for (int j = 0; j < GraphClass::vertex; j++)
+			row.push_back(0);
+		children.push_back(row);
+	}
 
     DrawingPopulation(lc);
     int parent1,parent2;
@@ -254,13 +238,4 @@ void GeneticClass::Interface(){
 }
 
 GeneticClass::~GeneticClass(){
-    if (chromosom != NULL)
-        for (int i=0; i<lc;i++)
-            free(chromosom[i]);
-    if (children != NULL)
-        for (int i=0; i<lc;i++)
-            free(children[i]);
-
-    free(chromosom);
-    free(children);
 }
