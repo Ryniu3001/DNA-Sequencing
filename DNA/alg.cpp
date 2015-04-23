@@ -1,4 +1,5 @@
 #include "alg.hpp"
+#include <algorithm>
 
 void GeneticClass::DrawingPopulation(int liczbaChromosomow){
 	for (int i = 0; i < liczbaChromosomow; i++){
@@ -29,41 +30,78 @@ void GeneticClass::DrawingPopulation(int liczbaChromosomow){
 
 	for (int i = 0; i < liczbaChromosomow; i++)
 	{
+		vector <bool> visited(GraphClass::vertex);
+		for (int g = 0; g<visited.size(); g++)
+			visited[g] = false;
 		chromosom[i][0] = rand() % GraphClass::vertex;
+		visited[chromosom[i][0]] = true;
+
 		for (int j = 1; j < GraphClass::vertex; j++)
 		{
+			bool found = false;
 			int siz = tmp[chromosom[i][j - 1]].size();
+			int chr1 = chromosom[i][j - 1];
 			if (siz != 0)
 			{
-				int pos = rand() % siz;
-				chromosom[i][j] = tmp[chromosom[i][j - 1]][pos];
+				int poprzednik = chromosom.at(i).at(j - 1);
+				for (int pos = 0; pos < siz; pos++){
+					bool tm = visited[tmp[poprzednik][pos]];
+					if (!visited[tmp[poprzednik][pos]]){
+						//printf("%d %d\n", j,tm);
+						chromosom[i][j] = tmp[poprzednik][pos];
+						visited[chromosom[i][j]] = true;
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+				{
+					//printf("Nie dopasowano nastepnika ?! %d %d %d \n", i, j, chromosom[i][j - 1]);
+					//chromosom[i][j] = rand() % GraphClass::vertex;
+					for (int l = 0; l < GraphClass::vertex; l++)
+					if (!visited[l])
+					{
+						visited[l] = true;
+						chromosom[i][j] = l;
+						break;
+					}
+				}
+
 			}
 			else
 			{
-				chromosom[i][j] = rand() % GraphClass::vertex;
+				for (int l = 0; l < GraphClass::vertex; l++)
+				if (!visited[l])
+				{
+					visited[l] = true;
+					chromosom[i][j] = l;
+					break;
+				}
 				//printf("Wierzcholek %d nie ma nastepnikow !!??!!?? %d %d\n", chromosom[i][j - 1], i, j - 1);
 			}
 		}
-	}
-
-
+		}
+	
 	list<int> listaOdn(GraphClass::vertex);
-	list<int>::iterator pos;
+	list<int>::iterator iter;
 
 	for (int i = 0; i < liczbaChromosomow; i++)
 	{
 		listaOdn.clear();
-		for (int i = 0; i < GraphClass::vertex; i++)
-			listaOdn.push_back(i);
-		int max = GraphClass::vertex - 1;
-		for (int j = 1; j < GraphClass::vertex; j++)
+		for (int ii = 0; ii < GraphClass::vertex; ii++)
+			listaOdn.push_back(ii);
+
+		for (int j = 0; j < GraphClass::vertex; j++)
 		{
-			pos = find(listaOdn.begin(), listaOdn.end(), chromosom[i][j]);
-			if (*pos < max)
-				chromosom[i][j] = *pos;
-			else
-				chromosom[i][j] = rand() % max;
-			max -= 1;
+			int result = 0;
+			int chrom = chromosom[i][j];
+			for (iter = listaOdn.begin(); iter != listaOdn.end(); iter++)
+			if (*iter == chrom)
+				break;
+			else result++;
+			
+			chromosom[i][j] = result;
+			listaOdn.erase(iter);
 		}
 	}
 	/////////////////STOP: NIEOPTYMALNY KOD DO PRZETESTOWANIA WYNIKU ////////////////////////

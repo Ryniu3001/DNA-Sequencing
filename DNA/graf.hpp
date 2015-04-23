@@ -13,7 +13,7 @@ class GraphClass{
 public:
 
 
-	static const int DEPTH = 7;
+	static const int DEPTH = 8;
     static int vertex;    
 	static vector<vector<int>> matrix;
     void create();			//Tworzenie grafu
