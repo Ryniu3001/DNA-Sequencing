@@ -5,9 +5,9 @@
 #include "include/dirent.h"
 #include <fstream>
 #include <iostream>
+#include <ctime>
 
 using namespace std;
-
 
 class Loader
 {
@@ -16,6 +16,7 @@ public:
 	static vector<string> data;
 	static void readFromFile();
 	static void show();
+	static void showTime(clock_t start, clock_t stop);
 
 	Loader();
 	~Loader();

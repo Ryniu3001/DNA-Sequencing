@@ -3,7 +3,6 @@
 
 Loader::Loader()
 {
-	
 }
 
 
@@ -43,4 +42,8 @@ void Loader::readFromFile(){
  void Loader::show(){
 	 for (int i = 0; i < Loader::data.size(); i++)
 		 cout << Loader::data[i] << endl;
+ }
+
+ void Loader::showTime(clock_t start, clock_t stop){
+	 cout << "Time: " << (stop - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl << endl;
  }

@@ -1,22 +1,20 @@
 #include "graf.hpp"
-#include <iostream>
-#include <stdlib.h>
-#include <time.h>
-#include <string>
-#include <vector>
-#include "Loader.h"
+
 
 using namespace std;
 
 int GraphClass::vertex;
-int **GraphClass::matrix;
+vector<vector<int>> GraphClass::matrix = initializer_list<vector<int>>();
 
 GraphClass Graph;
 void GraphClass::create(){
-//Alokacja pamieci
-    matrix = (int**) calloc (vertex,sizeof(int*));
-    for (int i=0;i<vertex;i++)
-        matrix[i] = (int*) calloc (vertex, sizeof(int));
+
+	for (int i = 0; i < vertex; i++){
+		vector<int> row;
+		for (int j = 0; j < vertex; j++)
+			row.push_back(0);
+		matrix.push_back(row);
+	}
 //Losowanie wag
 };
 
@@ -63,7 +61,4 @@ void GraphClass::print(){
 };
 
 GraphClass::~GraphClass(){
-    for (int i=0;i<vertex;i++)
-        free(matrix[i]);
-    free(matrix);
 }
