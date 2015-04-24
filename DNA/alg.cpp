@@ -40,10 +40,10 @@ bool rosnaco(vector<int> const a, vector<int> const b)
 
 void GeneticClass::initializeVectors(){
 	for (int i = 0; i < GraphClass::vertex; i++)
-		path.push_back(0);											// Kolejnosc miast w najelpszym rozwiazaniu
+		path.push_back(0);											
 
 	for (int i = 0; i < lc; i++)
-		ratings.push_back(0); // vector do przechowywania ocen kazdego osobnika
+		ratings.push_back(0); 
 
 	for (int i = 0; i < lc; i++){
 		vector<int> row1;
@@ -59,18 +59,14 @@ void GeneticClass::initializeVectors(){
 
 void GeneticClass::DrawingPopulation(){
 	srand(time(NULL));
-	/*  for (int i=0; i<lc; i++)
-	for (int j=0; j<GraphClass::vertex; j++)
-	chromosom[i][j] = rand() % (GraphClass::vertex-j); // Kodowanie chromosomow z lista odniesienia
-	*/
-
 
 	/////////////////START: NIEOPTYMALNY KOD DO PRZETESTOWANIA WYNIKU ////////////////////////
 
 	// Tworzenie wektora wierzcholkow, kazdy wierzcholek ma wektor wierzcholkow ktore pasuja do niego i maja ocene mniejsza od 1000
 	vector< vector < vector<int> > > nastepniki(GraphClass::vertex);
 	for (int i = 0; i <GraphClass::vertex; i++)		{
-		for (int j = 0; j < GraphClass::vertex; j++)	{
+		for (int j = 0; j < GraphClass::vertex; j++)	
+		{
 			if (GraphClass::matrix[i][j] != 1000){
 				vector<int> para(2);
 				para[0] = j;
@@ -79,9 +75,8 @@ void GeneticClass::DrawingPopulation(){
 			}
 		}
 		sort(nastepniki[i].begin(), nastepniki[i].end(), rosnaco);
-		//		cout << i << ":\t";		showVector(nastepniki[i]);
+		// cout << i << ":\t";		showVector(nastepniki[i]);
 	}
-	// TODO - posortowaæ
 
 	for (int i = 0; i < lc; i++){
 		// tworzony wektor odzwiedzonych wypelniony false
@@ -197,47 +192,47 @@ void GeneticClass::Crossover(int par1, int par2, vector<int> &child1, vector<int
 }
 
 void GeneticClass::Mutation(vector<int> &chromosome){
-	short int target;
-	target = rand() % GraphClass::vertex;
+	int target1, target2 = rand() % GraphClass::vertex;
+	do target1 = rand() % GraphClass::vertex;
+	while (target1 == target2);
 
-	for (int i = 0; i < chromosome.size(); i++)
-		cout << chromosome[i] << "  ";
-	cout << endl;
+	//	for (int i = 0; i < chromosome.size(); i++)
+	//		cout << chromosome[i] << "  ";
+	//	cout << endl; 
 
-	chromosome[target] = rand() % (GraphClass::vertex - target);
+	int temp = chromosome[target2];
+	chromosome[target2] = chromosome[target1];
+	chromosome[target1] = temp;
 
-	for (int i = 0; i < chromosome.size(); i++)
-		cout << chromosome[i] << "  ";
-	cout << endl;
+
 }
 
 int GeneticClass::Rating()
 {
-	int bestRating = 0;
-	int sum, from, to, startFrom;
+	int bestRating = 0, bestChromosom = -1;
+	int from, to;
+	vector<int> chromosomBestPath;
 
 	for (int i = 0; i<lc; i++){
-		sum = 0;
-		CreateList();
-		from = removeFromList(chromosom[i][0]); //Poczatek drogi (pierwszy wierzcholek)
-		startFrom = from;
+		vector<int> tmpPath(GraphClass::vertex);
+		from = chromosom[i][0];
+		tmpPath[0] = from;
 		for (int j = 1; j<GraphClass::vertex; j++){
-			to = removeFromList(chromosom[i][j]);
-			sum += GraphClass::matrix[from][to];
+			to = chromosom[i][j];
+			tmpPath[j] = to;
+			ratings[i] += GraphClass::matrix[from][to];
 			from = to;
-		}
-		sum += GraphClass::matrix[to][startFrom];
-		ratings[i] = sum;
+		}		
 
-		if ((bestRating > sum) || (bestRating == 0)){ // Zapamietuje najlepszy wynik (ocene)
-			bestRating = sum;
+		if ((bestRating > ratings[i]) || (bestRating == 0)){ 
+			bestRating = ratings[i];
 			bestChromosom = i;
+			chromosomBestPath = tmpPath;
 		}
 	}
-	for (int i=0;i<lc;i++) // Wypisanie ocen populacji
-	//	    cout << ratings[i] << endl;
 
-	if (bestScoreInAll > bestRating){
+	if ((bestScoreInAll > bestRating) || (bestScoreInAll == 0)){
+		path = chromosomBestPath;
 		bestScoreInAll = bestRating;
 		bestChromosomInAll = bestChromosom;
 	}
@@ -247,14 +242,14 @@ int GeneticClass::Rating()
 
 void GeneticClass::showBest(){
 	cout << "\nGenetic best score: " << bestScoreInAll << "\n";
-	CreateList();
 	for (int i = 0; i<GraphClass::vertex; i++){
-		path[i] = removeFromList(chromosom[bestChromosomInAll][i]);
+		path[i] = chromosom[bestChromosomInAll][i];
 		if (i > 0)
 			cout << " <" << GraphClass::matrix[path[i - 1]][path[i]] << "> " << path[i];
 		else
 			cout << path[i];
 	}
+	cout << endl;
 }
 
 
@@ -263,7 +258,6 @@ void GeneticClass::showBest(){
 void GeneticClass::Interface(){
 	lc = 1000;                        
 	bestScoreInAll = 0;
-	bestChromosom = -1;
 	int algorithmIteration = 5;
 	int score = 0, parent1, parent2;
 
@@ -271,6 +265,7 @@ void GeneticClass::Interface(){
 	DrawingPopulation();
 	bestScoreInAll = Rating();
 	cout << "Rodzice: " << bestScoreInAll << endl;
+	showBest(); 
 
 	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
 	for (int z = 0; z<algorithmIteration; z++){

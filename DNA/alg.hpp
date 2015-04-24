@@ -29,7 +29,6 @@ private:
 
 	int lc; // populacja, liczba chromosomow
 	int bestScoreInAll;
-	int bestChromosom;
 	int bestChromosomInAll;
 
 	void initializeVectors();
