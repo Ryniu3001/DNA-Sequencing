@@ -33,6 +33,8 @@ int main()
 	/////////////////  GENETIC ///////////////////
 	GeneticClass Genetic;
     Genetic.Interface();
+
+	cin.get();
     return 0;
 }
 

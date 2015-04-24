@@ -27,19 +27,21 @@ private:
 	int removeFromList(int a);
 	void PrintList();
 
-	int lc; // populacja
+	int lc; // populacja, liczba chromosomow
 	int bestScoreInAll;
 	int bestChromosom;
 	int bestChromosomInAll;
 
 	void initializeVectors();
-	void DrawingPopulation(int liczbaChromosomow);
+	void DrawingPopulation();
 	int Rating();
 	void Crossover(int par1, int par2, vector<int> &child1, vector<int> &child2);
 	void Mutation(vector<int> &chomosome);
-	int TournamentSelection(int x, int liczbaChromosomow); //x - liczba chromosow w turnieju
+	int TournamentSelection(int x); //x - liczba chromosow w turnieju
 	void showBest();
 
+	void showVector(vector< vector<int> > wektor);
+	//bool rosnaco(vector<int> *const a, vector<int> *const b);
 public:
 	void Interface();
 	~GeneticClass();
