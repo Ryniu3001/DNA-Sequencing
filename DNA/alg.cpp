@@ -128,7 +128,7 @@ void GeneticClass::DrawingPopulation(){
 					chromosom[i][j] = l;
 					break;
 				}
-				printf("Wierzcholek %d nie ma nastepnikow !!??!!?? %d %d\n", chromosom[i][j - 1], i, j - 1);
+				//printf("Wierzcholek %d nie ma nastepnikow !!??!!?? %d %d\n", chromosom[i][j - 1], i, j - 1);
 			}
 		}
 	}
@@ -217,6 +217,7 @@ int GeneticClass::Rating()
 		vector<int> tmpPath(GraphClass::vertex);
 		from = chromosom[i][0];
 		tmpPath[0] = from;
+		fill(ratings.begin(), ratings.end(), 0);
 		for (int j = 1; j<GraphClass::vertex; j++){
 			to = chromosom[i][j];
 			tmpPath[j] = to;
@@ -270,22 +271,22 @@ void GeneticClass::Interface(){
 	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
 	for (int z = 0; z<algorithmIteration; z++){
 		int P = -1;		                            // licznik nowej populacji
-		while (P < lc - 2){
-			parent1 = TournamentSelection(10);
-			do
-				parent2 = TournamentSelection(10);
-			while (parent1 == parent2);
-			Crossover(parent1, parent2, children[P+1], children[P+2]);
-			P += 2;
-		}
+		//while (P < lc - 2){
+		//	parent1 = TournamentSelection(10);
+		//	do
+		//		parent2 = TournamentSelection(10);
+		//	while (parent1 == parent2);
+		//	Crossover(parent1, parent2, children[P+1], children[P+2]);
+		//	P += 2;
+		//}
 
 		int mutationIteration = P / 2;
 		for (int i = 0; i<mutationIteration; i++){
 			int target2 = (rand()*rand()) % lc;
-			Mutation(children[target2]);
+			Mutation(chromosom[target2]);				//		przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children //
 		}
 
-		chromosom.swap(children);					
+		//chromosom.swap(children);						//zakomentowany swap bo zakomentowane krzyzowanie // 	
 		score = Rating();
 		cout << "Populacja " << z << " " << score << endl;
 	}
