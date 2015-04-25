@@ -134,28 +134,28 @@ void GeneticClass::DrawingPopulation(){
 	}
 
 	// lista odniesienia
-	list<int> listaOdn(GraphClass::vertex);
-	list<int>::iterator iter;
-	for (int i = 0; i < lc; i++)
-	{
-		listaOdn.clear();
-		for (int ii = 0; ii < GraphClass::vertex; ii++)
-			listaOdn.push_back(ii);
+	//list<int> listaOdn(GraphClass::vertex);
+	//list<int>::iterator iter;
+	//for (int i = 0; i < lc; i++)
+	//{
+	//	listaOdn.clear();
+	//	for (int ii = 0; ii < GraphClass::vertex; ii++)
+	//		listaOdn.push_back(ii);
 
-		for (int j = 0; j < GraphClass::vertex; j++)
-		{
-			int result = 0;
-			int chrom = chromosom[i][j];
-			for (iter = listaOdn.begin(); iter != listaOdn.end(); iter++)
-			if (*iter == chrom)
-				break;
-			else
-				result++;
+	//	for (int j = 0; j < GraphClass::vertex; j++)
+	//	{
+	//		int result = 0;
+	//		int chrom = chromosom[i][j];
+	//		for (iter = listaOdn.begin(); iter != listaOdn.end(); iter++)
+	//		if (*iter == chrom)
+	//			break;
+	//		else
+	//			result++;
 
-			chromosom[i][j] = result;
-			listaOdn.erase(iter);
-		}
-	}
+	//		chromosom[i][j] = result;
+	//		listaOdn.erase(iter);
+	//	}
+	//}
 	/////////////////STOP: NIEOPTYMALNY KOD DO PRZETESTOWANIA WYNIKU ////////////////////////
 
 
@@ -258,7 +258,7 @@ void GeneticClass::showBest(){
 void GeneticClass::Interface(){
 	lc = 1000;                        
 	bestScoreInAll = 0;
-	int algorithmIteration = 5;
+	int algorithmIteration = 10;
 	int score = 0, parent1, parent2;
 
 	initializeVectors();
