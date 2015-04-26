@@ -22,10 +22,9 @@ private:
 	vector<int> ratings;
 	vector<int> path;
 
-	list<int> head;
-	void CreateList();
-	int removeFromList(int a);
-	void PrintList();
+	list<int> createList(vector<int> chromosome);
+	int removeFromList(int a, list<int> lista);
+	void printList(list<int> lista);
 
 	int lc; // populacja, liczba chromosomow
 	int bestScoreInAll;
@@ -39,7 +38,7 @@ private:
 	int TournamentSelection(int x); //x - liczba chromosow w turnieju
 	void showBest();
 
-	void showVector(vector< vector<int> > wektor);
+	void showVector(vector<int> wektor);
 	//bool rosnaco(vector<int> *const a, vector<int> *const b);
 public:
 	void Interface();
