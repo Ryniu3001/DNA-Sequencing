@@ -212,12 +212,11 @@ int GeneticClass::Rating()
 	int bestRating = 0, bestChromosom = -1;
 	int from, to;
 	vector<int> chromosomBestPath;
-
+	fill(ratings.begin(), ratings.end(), 0);
 	for (int i = 0; i<lc; i++){
 		vector<int> tmpPath(GraphClass::vertex);
 		from = chromosom[i][0];
 		tmpPath[0] = from;
-		fill(ratings.begin(), ratings.end(), 0);
 		for (int j = 1; j<GraphClass::vertex; j++){
 			to = chromosom[i][j];
 			tmpPath[j] = to;
