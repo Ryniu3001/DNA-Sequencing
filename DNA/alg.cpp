@@ -26,7 +26,6 @@ int GeneticClass::removeFromList(int a){
 	return value;
 }
 
-
 void GeneticClass::showVector(vector< vector<int> > wektor){
 	for (int i = 0; i < wektor.size(); i++)
 		cout << wektor[i][0] << "  ";
@@ -179,32 +178,46 @@ int GeneticClass::TournamentSelection(int x){
 	return best;
 }
 
-void GeneticClass::Crossover(int par1, int par2, vector<int> &child1, vector<int> &child2){
+void GeneticClass::Crossover(int parent1, int parent2, vector<int> &child1, vector<int> &child2){
+
+
+
 	for (int i = 0; i <= (GraphClass::vertex / 2); i++){
-		child1[i] = chromosom[par1][i];
-		child2[i] = chromosom[par2][i];
+		child1[i] = chromosom[parent1][i];
+		child2[i] = chromosom[parent2][i];
 	}
 
 	for (int i = (GraphClass::vertex / 2) + 1; i<GraphClass::vertex; i++){
-		child1[i] = chromosom[par2][i];
-		child2[i] = chromosom[par1][i];
+		child1[i] = chromosom[parent2][i];
+		child2[i] = chromosom[parent1][i];
 	}
 }
 
+int getWorst(vector<int> chromosome){
+	int worst = 0, score = -1;
+	
+	for (int i = 1; i < chromosome.size(); i++)
+		if (score < GraphClass::matrix[chromosome[i-1]][chromosome[i]]){
+			score = GraphClass::matrix[chromosome[i - 1]][chromosome[i]];
+			worst = i;
+		}
+
+	return worst;
+}
+
 void GeneticClass::Mutation(vector<int> &chromosome){
-	int target1, target2 = rand() % GraphClass::vertex;
-	do target1 = rand() % GraphClass::vertex;
+	int target1, target2;
+	target1 = getWorst(chromosome);
+	do target2 = rand() % GraphClass::vertex;
 	while (target1 == target2);
 
-	//	for (int i = 0; i < chromosome.size(); i++)
-	//		cout << chromosome[i] << "  ";
-	//	cout << endl; 
+//	for (int i = 0; i < chromosome.size(); i++)
+//		cout << chromosome[i] << "  ";
+//	cout << endl; 
 
 	int temp = chromosome[target2];
 	chromosome[target2] = chromosome[target1];
 	chromosome[target1] = temp;
-
-
 }
 
 int GeneticClass::Rating()
@@ -228,6 +241,7 @@ int GeneticClass::Rating()
 			bestRating = ratings[i];
 			bestChromosom = i;
 			chromosomBestPath = tmpPath;
+			GraphClass::matrix[0][0];
 		}
 	}
 
@@ -258,7 +272,7 @@ void GeneticClass::showBest(){
 void GeneticClass::Interface(){
 	lc = 1000;                        
 	bestScoreInAll = 0;
-	int algorithmIteration = 10;
+	int algorithmIteration = 1;
 	int score = 0, parent1, parent2;
 
 	initializeVectors();
@@ -270,24 +284,24 @@ void GeneticClass::Interface(){
 	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
 	for (int z = 0; z<algorithmIteration; z++){
 		int P = -1;		                            // licznik nowej populacji
-		//while (P < lc - 2){
-		//	parent1 = TournamentSelection(10);
-		//	do
-		//		parent2 = TournamentSelection(10);
-		//	while (parent1 == parent2);
-		//	Crossover(parent1, parent2, children[P+1], children[P+2]);
-		//	P += 2;
-		//}
+		while (P < lc - 2){
+			parent1 = TournamentSelection(10);
+			do
+				parent2 = TournamentSelection(10);
+			while (parent1 == parent2);
+			Crossover(parent1, parent2, children[P+1], children[P+2]);
+			P += 2;
+		}
 
-		int mutationIteration = P / 2;
+		int mutationIteration = 100;//P / 2;
 		for (int i = 0; i<mutationIteration; i++){
-			int target2 = (rand()*rand()) % lc;
-			Mutation(chromosom[target2]);				//		przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children //
+			int target = TournamentSelection(10);
+			Mutation(path);//chromosom[target]);				//		przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children //
 		}
 
 		//chromosom.swap(children);						//zakomentowany swap bo zakomentowane krzyzowanie // 	
 		score = Rating();
-		cout << "Populacja " << z << " " << score << endl;
+		cout << "Populacja_" << z << "  = " << score << endl;
 	}
 	showBest();
 }
