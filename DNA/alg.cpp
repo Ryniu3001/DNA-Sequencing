@@ -1,34 +1,36 @@
 #include "alg.hpp"
-#include <algorithm>
 
-void GeneticClass::CreateList(){
+
+list<int> GeneticClass::createList(vector<int> chromosome){
+	list<int> lista;
 	for (int i = 0; i<GraphClass::vertex; i++){
-		head.push_back(i);
+		lista.push_back(i);
 	}
+	return lista;
 }
 
-void GeneticClass::PrintList(){
-	for (list<int>::iterator iter = head.begin(); iter != head.end(); iter++)
+void GeneticClass::printList(list<int> lista){
+	for (list<int>::iterator iter = lista.begin(); iter != lista.end(); iter++)
 		cout << *iter << " ";
 	cout << endl;
 }
 
-int GeneticClass::removeFromList(int a){
+int GeneticClass::removeFromList(int a, list<int> lista){
 	int value = 0;
-	if (head.size() > 0){
-		list<int>::iterator iter = head.begin();
+	if (lista.size() > 0){
+		list<int>::iterator iter = lista.begin();
 		for (int i = 0; i < a - 1; i++){
 			iter++;
 		}
 		value = *iter;
-		head.erase(iter);
+		lista.erase(iter);
 	}
 	return value;
 }
 
-void GeneticClass::showVector(vector< vector<int> > wektor){
+void showVector(vector<int> wektor){
 	for (int i = 0; i < wektor.size(); i++)
-		cout << wektor[i][0] << "  ";
+		cout << wektor[i] << "  ";
 	cout << endl;
 }
 
@@ -39,10 +41,10 @@ bool rosnaco(vector<int> const a, vector<int> const b)
 
 void GeneticClass::initializeVectors(){
 	for (int i = 0; i < GraphClass::vertex; i++)
-		path.push_back(0);											
+		path.push_back(0);
 
 	for (int i = 0; i < lc; i++)
-		ratings.push_back(0); 
+		ratings.push_back(0);
 
 	for (int i = 0; i < lc; i++){
 		vector<int> row1;
@@ -292,7 +294,6 @@ int GeneticClass::Rating()
 	if ((bestScoreInAll > bestRating) || (bestScoreInAll == 0)){
 		path = chromosomBestPath;
 		bestScoreInAll = bestRating;
-		bestChromosomInAll = bestChromosom;
 	}
 
 	return bestRating;
@@ -301,7 +302,6 @@ int GeneticClass::Rating()
 void GeneticClass::showBest(){
 	cout << "\nGenetic best score: " << bestScoreInAll << "\n";
 	for (int i = 0; i<path.size(); i++){
-		path[i] = chromosom[bestChromosomInAll][i];
 		if (i > 0)
 			cout << " <" << GraphClass::matrix[path[i - 1]][path[i]] << "> " << path[i];
 		else
@@ -311,7 +311,37 @@ void GeneticClass::showBest(){
 	cout << endl;
 }
 
+void GeneticClass::checksRepeatsInChromosom(){
+	cout << "SPRAWDZAMY POWTORZENIA IN CHROMOSOM ... ";
+	for (int i = 0; i < lc; i++){
+		for (int j = i + 1; j < lc; j++){
+			bool noRepeat = false;
+			for (int k = 0; k < GraphClass::vertex; k++){
+				if (chromosom[i][k] != chromosom[j][k]){
+					noRepeat = true;
+					break;
+				}
+			}
+			if (!noRepeat)
+				cout << endl << "Chromosomy takie same to: " << i << " oraz " << j << endl;
+		}
+	}
+	cout << "KONIEC" << endl;
+}
 
+void GeneticClass::checksRepeatsInSet(){
+	cout << "SPRAWDZAMY POWTORZENIA IN SET ... ";
+	for (int i = 0; i < lc; i++){
+		vector<bool> visited(GraphClass::vertex);
+		for (int j = 0; j < GraphClass::vertex; j++){
+			if (!visited[chromosom[i][j]])
+				visited[chromosom[i][j]] = true;
+			else
+				cout << endl << "W CHROMOSOMIE " << i << " POWTORZENIA" << endl;
+		}
+	}
+	cout << "KONIEC" << endl << endl;
+}
 
 ///////////////////////////////  INTERFACE  ////////////////////////////////
 void GeneticClass::Interface(){
@@ -348,7 +378,7 @@ void GeneticClass::Interface(){
 		score = Rating();
 		cout << "Populacja_" << z << "  = " << score << endl;
 	}
-	//showBest();
+	showBest();
 }
 
 GeneticClass::~GeneticClass(){
