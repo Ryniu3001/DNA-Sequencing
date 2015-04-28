@@ -92,7 +92,7 @@ void GeneticClass::DrawingPopulation(){
 		{
 			int siz = nastepniki[chromosom[i][j - 1]].size();				// liczba pasujacych nastepnikow
 			int poprzednik = chromosom[i][j - 1];
-			if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (nastepniki[poprzednik][0][1] == 0))
+			if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) ) //&& (nastepniki[poprzednik][0][1] == 0)
 			{
 				chromosom[i][j] = nastepniki[poprzednik][0][0];
 				visited[chromosom[i][j]] = true;
