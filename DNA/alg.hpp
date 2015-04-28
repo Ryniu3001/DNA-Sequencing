@@ -7,13 +7,9 @@
 #include <ctime>
 #include <list>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
-
-struct ListStruct{
-	int value;
-	ListStruct *next;
-};
 
 class GeneticClass{
 private:

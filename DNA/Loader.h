@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <ctime>
+#include <sstream>
 
 using namespace std;
 
@@ -13,8 +14,8 @@ class Loader
 {
 
 public:
-	static vector<string> data;
-	static void readFromFile();
+	static int optimum;
+	static vector<string> readFromFile();
 	static void show();
 	static void showTime(clock_t start, clock_t stop);
 

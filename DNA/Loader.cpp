@@ -1,6 +1,5 @@
 #include "Loader.h"
 
-
 Loader::Loader()
 {
 }
@@ -10,19 +9,47 @@ Loader::~Loader()
 {
 }
 
+int Loader::optimum = 0;
 
-void Loader::readFromFile(){
+int getOptimum(string name){
+	int result = -1;
+	int minus = 0;
+	size_t begin = name.find(".");
+	size_t end = name.find("-");
+	if (end == string::npos)
+		end = name.find("+");
+	else {
+		size_t minus_end = name.rfind(".");
+		string number = name.substr(end+1, minus_end);
+		istringstream iss(number);
+		iss >> minus;
+	}
+	
+	begin++;
+	end -= 2;
+	string number = name.substr(begin, end);	
+	istringstream iss(number);
+	iss >> result;
+	result -= minus;
+	cout << "Optimum: " << result << endl;
+
+	return result;
+}
+
+vector<string> Loader::readFromFile(){
+	vector<string> data;
 	string fileName = Loader::getFileName();
 	ifstream file(".\\resources\\" + fileName);
 	string line;
 	while (getline(file, line)) {
 		if (!line.empty())
-			Loader::data.push_back(line);
+			data.push_back(line);
 	}
-
 	cout << fileName << endl;
-}
+	Loader::optimum = getOptimum(fileName);
 
+	return data;
+}
 
  string Loader::getFileName(){
 	string result;
@@ -40,11 +67,6 @@ void Loader::readFromFile(){
 	}
 	return result;
 }
-
- void Loader::show(){
-	 for (int i = 0; i < Loader::data.size(); i++)
-		 cout << Loader::data[i] << endl;
- }
 
  void Loader::showTime(clock_t start, clock_t stop){
 	 cout << "Time: " << (stop - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl << endl;
