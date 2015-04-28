@@ -28,7 +28,6 @@ private:
 
 	int lc; // populacja, liczba chromosomow
 	int bestScoreInAll;
-	int bestChromosomInAll;
 
 	void initializeVectors();
 	void DrawingPopulation();
