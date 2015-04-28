@@ -77,6 +77,37 @@ void GeneticClass::DrawingPopulation(){
 		// cout << i << ":\t";		showVector(nastepniki[i]);
 	}
 
+	///////////////////////////////TEST DLA BLEDOW POZYTYWNYCH//////////////////////////////////////////////
+	for (int i = 0; i < lc; i++){
+		vector <bool> visited(GraphClass::vertex);
+		for (int g = 0; g<visited.size(); g++)
+			visited[g] = false;
+
+		int chromLength = (int)round(GraphClass::vertex * ((65 + (rand() % 36)) / 100.0));			// 65 - 100 % spektrum
+		chromosom[i][0] = i % GraphClass::vertex;		//poczatkowy wierzcholek
+		visited[chromosom[i][0]] = true;
+		for (int j = 1; j < chromLength; j++)
+		{
+			int siz = nastepniki[chromosom[i][j - 1]].size();				// liczba pasujacych nastepnikow
+			int poprzednik = chromosom[i][j - 1];
+			if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (nastepniki[poprzednik][0][1] == 0))
+			{
+				chromosom[i][j] = nastepniki[poprzednik][0][0];
+				visited[chromosom[i][j]] = true;
+			}
+			else
+			{
+				chromosom[i].resize(j);
+				break;
+			}
+			if (j == chromLength - 1)
+				printf("Dotrwalem do konca !\n");
+		}
+	}
+
+	/////////////////////////////////////////////////////////////////////////////
+
+	/*
 	for (int i = 0; i < lc; i++){
 		// tworzony wektor odzwiedzonych wypelniony false
 		vector <bool> visited(GraphClass::vertex);
@@ -97,12 +128,23 @@ void GeneticClass::DrawingPopulation(){
 				int poprzednik = chromosom[i][j - 1];			// ? int poprzednik = chromosom.at(i).at(j - 1);
 				for (int pos = 0; pos < siz; pos++)
 				{
-					if (!visited[nastepniki[poprzednik][pos][0]])			//wybierz pierwszego nastepnika z listy i sprawdz czy byl juz odwiedzony
+					if ((j < GraphClass::vertex) && (!visited[nastepniki[poprzednik][pos][0]]))			//wybierz pierwszego nastepnika z listy i sprawdz czy byl juz odwiedzony
 					{
 						chromosom[i][j] = nastepniki[poprzednik][pos][0];
 						visited[chromosom[i][j]] = true;
 						found = true;
 						break;
+					}
+					else
+					{
+						int v = rand() % siz;
+						if ((!visited[nastepniki[poprzednik][v][0]]))
+						{
+							chromosom[i][j] = nastepniki[poprzednik][pos][0];
+							visited[chromosom[i][j]] = true;
+							found = true;
+							break;
+						}
 					}
 				}
 				if (!found)		//jeœli wszystkie na liscie nastepniko byly juz wczesniej odwiedzone dobierz losowo nieodwiedzony wierzcholek
@@ -131,7 +173,7 @@ void GeneticClass::DrawingPopulation(){
 			}
 		}
 	}
-
+	*/
 	// lista odniesienia
 	//list<int> listaOdn(GraphClass::vertex);
 	//list<int>::iterator iter;
@@ -222,7 +264,7 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 
 int GeneticClass::Rating()
 {
-	int bestRating = 0, bestChromosom = -1;
+	int bestRating = -1, bestChromosom = -1;
 	int from, to;
 	vector<int> chromosomBestPath;
 	fill(ratings.begin(), ratings.end(), 0);
@@ -230,16 +272,18 @@ int GeneticClass::Rating()
 		vector<int> tmpPath(GraphClass::vertex);
 		from = chromosom[i][0];
 		tmpPath[0] = from;
-		for (int j = 1; j<GraphClass::vertex; j++){
+		int siz = chromosom[i].size();
+		for (int j = 1; j<chromosom[i].size(); j++){
 			to = chromosom[i][j];
 			tmpPath[j] = to;
 			ratings[i] += GraphClass::matrix[from][to];
 			from = to;
 		}		
 
-		if ((bestRating > ratings[i]) || (bestRating == 0)){ 
+		if (((chromosom[i].size() > chromosomBestPath.size()) && (bestRating >= ratings[i])) || (bestRating == -1)){ 
 			bestRating = ratings[i];
 			bestChromosom = i;
+			tmpPath.resize(chromosom[i].size());
 			chromosomBestPath = tmpPath;
 			GraphClass::matrix[0][0];
 		}
@@ -256,13 +300,14 @@ int GeneticClass::Rating()
 
 void GeneticClass::showBest(){
 	cout << "\nGenetic best score: " << bestScoreInAll << "\n";
-	for (int i = 0; i<GraphClass::vertex; i++){
+	for (int i = 0; i<path.size(); i++){
 		path[i] = chromosom[bestChromosomInAll][i];
 		if (i > 0)
 			cout << " <" << GraphClass::matrix[path[i - 1]][path[i]] << "> " << path[i];
 		else
 			cout << path[i];
 	}
+	cout << endl << "Dlugosc: "<< path.size();
 	cout << endl;
 }
 
@@ -270,7 +315,7 @@ void GeneticClass::showBest(){
 
 ///////////////////////////////  INTERFACE  ////////////////////////////////
 void GeneticClass::Interface(){
-	lc = 1000;                        
+	lc = 3000;                        
 	bestScoreInAll = 0;
 	int algorithmIteration = 1;
 	int score = 0, parent1, parent2;
@@ -284,26 +329,26 @@ void GeneticClass::Interface(){
 	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
 	for (int z = 0; z<algorithmIteration; z++){
 		int P = -1;		                            // licznik nowej populacji
-		while (P < lc - 2){
-			parent1 = TournamentSelection(10);
-			do
-				parent2 = TournamentSelection(10);
-			while (parent1 == parent2);
-			Crossover(parent1, parent2, children[P+1], children[P+2]);
-			P += 2;
-		}
+		//while (P < lc - 2){
+		//	parent1 = TournamentSelection(10);
+		//	do
+		//		parent2 = TournamentSelection(10);
+		//	while (parent1 == parent2);
+		//	Crossover(parent1, parent2, children[P+1], children[P+2]);
+		//	P += 2;
+		//}
 
-		int mutationIteration = 100;//P / 2;
+		int mutationIteration = P / 2;
 		for (int i = 0; i<mutationIteration; i++){
 			int target = TournamentSelection(10);
-			Mutation(path);//chromosom[target]);				//		przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children //
+			Mutation(chromosom[target]);//chromosom[target]);				//		przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children //
 		}
 
 		//chromosom.swap(children);						//zakomentowany swap bo zakomentowane krzyzowanie // 	
 		score = Rating();
 		cout << "Populacja_" << z << "  = " << score << endl;
 	}
-	showBest();
+	//showBest();
 }
 
 GeneticClass::~GeneticClass(){

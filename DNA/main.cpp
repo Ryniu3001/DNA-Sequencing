@@ -26,9 +26,9 @@ int main()
 	Loader::showTime(start, stop);
 
 	/////////////////  GREEDY ///////////////////
-	Greedy GR;
-	GR.start(0, 0);
-	GR.printResult();
+	//Greedy GR;
+	//GR.start(0, 0);
+	//GR.printResult();
 
 	/////////////////  GENETIC ///////////////////
 	GeneticClass Genetic;
