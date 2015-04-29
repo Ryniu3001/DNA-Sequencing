@@ -79,7 +79,7 @@ void GeneticClass::DrawingPopulation(){
 		// cout << i << ":\t";		showVector(nastepniki[i]);
 	}
 
-	///////////////////////////////TEST DLA BLEDOW POZYTYWNYCH//////////////////////////////////////////////
+	///////////////////////////////SZUKANIE SCIEZEK Z PRZESUNIECIEM 1//////////////////////////////////////////////
 	for (int i = 0; i < lc; i++){
 		vector <bool> visited(GraphClass::vertex);
 		for (int g = 0; g<visited.size(); g++)
@@ -94,19 +94,33 @@ void GeneticClass::DrawingPopulation(){
 			j++;
 			int siz = nastepniki[chromosom[i][j - 1]].size();				// liczba pasujacych nastepnikow
 			int poprzednik = chromosom[i][j - 1];
-			if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (dnaLen < Loader::optimum) && (nastepniki[poprzednik][0][1] == 1)) //TODO: Czy ma byc ostatni warunek ?
-			{
+			if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (dnaLen < Loader::optimum)) //&& (nastepniki[poprzednik][0][1] == 1)) //TODO: Poki co bez tego warunku
+			{																					// Dla pozytywnych generujemy po najnizszych ocenach
 				chromosom[i][j] = nastepniki[poprzednik][0][0];
 				dnaLen += nastepniki[poprzednik][0][1];
 				visited[chromosom[i][j]] = true;
+			}
+			else if ((siz) && (dnaLen < Loader::optimum)) //Jesli najlepszy bedzie zajety to bierzemy nastepny nieodwiedzony z listy nastepnikow 
+			{
+				for (int pos = 1; pos < siz; pos++)
+				{
+					if ((!visited[nastepniki[poprzednik][pos][0]]))
+					{
+						chromosom[i][j] = nastepniki[poprzednik][pos][0];
+						visited[chromosom[i][j]] = true;
+						break;
+					}
+				}
+				chromosom[i].resize(j);
+				break;
 			}
 			else
 			{
 				chromosom[i].resize(j);
 				break;
 			}
-			if (j == GraphClass::vertex - 1)
-				printf("Dotrwalem do konca !\n");
+			/*if (j == GraphClass::vertex - 1)
+				printf("Dotrwalem do konca !\n");*/
 		}
 	}
 
@@ -274,20 +288,20 @@ int GeneticClass::Rating()
 	fill(ratings.begin(), ratings.end(), 0);
 	for (int i = 0; i<lc; i++){
 		vector<int> tmpPath(GraphClass::vertex);
-		ratings[i] = chromosom[i].size();
-				
+		ratings[i] = chromosom[i].size();				
 
-		if ((ratings[i] > bestRating) || (bestRating == -1)){  // && (Loader::optimum-10 >= ratings[i]))
+		if ((ratings[i] > bestRating) || (bestRating == -1))
+		{
 			bestRating = ratings[i];
 			bestChromosom = i;
 		}
 	}
 
-	if ((bestScoreInAll > bestRating) || (bestScoreInAll == 0)){
+	if ((bestScoreInAll > bestRating) || (bestScoreInAll == 0))
+	{
 		path = chromosom[bestChromosom];
 		bestScoreInAll = bestRating;
 	}
-
 	return bestRating;
 }
 
