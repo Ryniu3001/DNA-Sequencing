@@ -84,17 +84,20 @@ void GeneticClass::DrawingPopulation(){
 		vector <bool> visited(GraphClass::vertex);
 		for (int g = 0; g<visited.size(); g++)
 			visited[g] = false;
-
-		//int chromLength = (int)round(GraphClass::vertex * ((65 + (rand() % 36)) / 100.0));			// 65 - 100 % spektrum
-		chromosom[i][0] = i % GraphClass::vertex;		//poczatkowy wierzcholek
+		bool cut = false;													// decyduje czy odcinamy DNA
+		unsigned int dnaLen = 10;											//TODO: zmienic 10 na jakas zmienna czy cos
+		chromosom[i][0] = i % GraphClass::vertex;							//poczatkowy wierzcholek
 		visited[chromosom[i][0]] = true;
-		for (int j = 1; j < GraphClass::vertex; j++)
+		int j = 0;
+		while ((cut == false) && (j < GraphClass::vertex))
 		{
+			j++;
 			int siz = nastepniki[chromosom[i][j - 1]].size();				// liczba pasujacych nastepnikow
 			int poprzednik = chromosom[i][j - 1];
-			if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (nastepniki[poprzednik][0][1] == 1))
+			if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (dnaLen < Loader::optimum) && (nastepniki[poprzednik][0][1] == 1)) //TODO: Czy ma byc ostatni warunek ?
 			{
 				chromosom[i][j] = nastepniki[poprzednik][0][0];
+				dnaLen += nastepniki[poprzednik][0][1];
 				visited[chromosom[i][j]] = true;
 			}
 			else
@@ -267,32 +270,21 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 int GeneticClass::Rating()
 {
 	int bestRating = -1, bestChromosom = -1;
-	int from, to;
 	vector<int> chromosomBestPath;
-	fill(ratings.begin(), ratings.end(), 10);
+	fill(ratings.begin(), ratings.end(), 0);
 	for (int i = 0; i<lc; i++){
 		vector<int> tmpPath(GraphClass::vertex);
-		from = chromosom[i][0];
-		tmpPath[0] = from;
-		int siz = chromosom[i].size();
-		for (int j = 1; j<chromosom[i].size(); j++){
-			to = chromosom[i][j];
-			tmpPath[j] = to;
-			ratings[i] += GraphClass::matrix[from][to];
-			from = to;
-		}		
+		ratings[i] = chromosom[i].size();
+				
 
-		if ((chromosom[i].size() > chromosomBestPath.size()) || (bestRating == -1)){  // && (Loader::optimum-10 >= ratings[i]))
+		if ((ratings[i] > bestRating) || (bestRating == -1)){  // && (Loader::optimum-10 >= ratings[i]))
 			bestRating = ratings[i];
 			bestChromosom = i;
-			tmpPath.resize(chromosom[i].size());
-			chromosomBestPath = tmpPath;
-			GraphClass::matrix[0][0];
 		}
 	}
 
 	if ((bestScoreInAll > bestRating) || (bestScoreInAll == 0)){
-		path = chromosomBestPath;
+		path = chromosom[bestChromosom];
 		bestScoreInAll = bestRating;
 	}
 
@@ -301,13 +293,19 @@ int GeneticClass::Rating()
 
 void GeneticClass::showBest(){
 	cout << "\nGenetic best score: " << bestScoreInAll << "\n";
+	unsigned int dnaLen = 0;
 	for (int i = 0; i<path.size(); i++){
 		if (i > 0)
+		{
 			cout << " <" << GraphClass::matrix[path[i - 1]][path[i]] << "> " << path[i];
+			dnaLen += GraphClass::matrix[path[i - 1]][path[i]];
+		}
 		else
+		{
 			cout << path[i];
+		}
 	}
-	cout << endl << "Dlugosc: "<< path.size();
+	cout << endl << "DlugoscDNA: "<< dnaLen + 10;		//TODO: Tak samo jak przy generowaniu populacji cos z ta 10 trzeba zrobic.
 	cout << endl;
 }
 
@@ -354,7 +352,6 @@ void GeneticClass::Interface(){
 	DrawingPopulation();
 	bestScoreInAll = Rating();
 	cout << "Rodzice: " << bestScoreInAll << endl;
-	showBest(); 
 
 	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
 	for (int z = 0; z<algorithmIteration; z++){
