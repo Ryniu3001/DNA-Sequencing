@@ -27,7 +27,7 @@ void GraphClass::calculateWeight(const vector<string> &data){
 					string subStr2 = data[j].substr(0, data[j].length() - d);
 					if (!subStr.compare(subStr2))
 					{
-						matrix[i][j] = d-1;
+						matrix[i][j] = d;
 						break;
 					}
 				}	

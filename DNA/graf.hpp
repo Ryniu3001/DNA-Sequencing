@@ -11,7 +11,7 @@ using namespace std;
 
 class GraphClass{
 public:
-	static const int DEPTH = 5;
+	static const int DEPTH = 1;
     static int vertex;    
 	static vector<vector<int>> matrix;
     void create();			//Tworzenie grafu

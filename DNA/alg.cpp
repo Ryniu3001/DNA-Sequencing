@@ -85,14 +85,14 @@ void GeneticClass::DrawingPopulation(){
 		for (int g = 0; g<visited.size(); g++)
 			visited[g] = false;
 
-		int chromLength = (int)round(GraphClass::vertex * ((65 + (rand() % 36)) / 100.0));			// 65 - 100 % spektrum
+		//int chromLength = (int)round(GraphClass::vertex * ((65 + (rand() % 36)) / 100.0));			// 65 - 100 % spektrum
 		chromosom[i][0] = i % GraphClass::vertex;		//poczatkowy wierzcholek
 		visited[chromosom[i][0]] = true;
-		for (int j = 1; j < chromLength; j++)
+		for (int j = 1; j < GraphClass::vertex; j++)
 		{
 			int siz = nastepniki[chromosom[i][j - 1]].size();				// liczba pasujacych nastepnikow
 			int poprzednik = chromosom[i][j - 1];
-			if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) ) //&& (nastepniki[poprzednik][0][1] == 0)
+			if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (nastepniki[poprzednik][0][1] == 1))
 			{
 				chromosom[i][j] = nastepniki[poprzednik][0][0];
 				visited[chromosom[i][j]] = true;
@@ -102,7 +102,7 @@ void GeneticClass::DrawingPopulation(){
 				chromosom[i].resize(j);
 				break;
 			}
-			if (j == chromLength - 1)
+			if (j == GraphClass::vertex - 1)
 				printf("Dotrwalem do konca !\n");
 		}
 	}
@@ -269,7 +269,7 @@ int GeneticClass::Rating()
 	int bestRating = -1, bestChromosom = -1;
 	int from, to;
 	vector<int> chromosomBestPath;
-	fill(ratings.begin(), ratings.end(), 0);
+	fill(ratings.begin(), ratings.end(), 10);
 	for (int i = 0; i<lc; i++){
 		vector<int> tmpPath(GraphClass::vertex);
 		from = chromosom[i][0];
@@ -282,7 +282,7 @@ int GeneticClass::Rating()
 			from = to;
 		}		
 
-		if (((chromosom[i].size() > chromosomBestPath.size()) && (bestRating >= ratings[i])) || (bestRating == -1)){ 
+		if ((chromosom[i].size() > chromosomBestPath.size()) || (bestRating == -1)){  // && (Loader::optimum-10 >= ratings[i]))
 			bestRating = ratings[i];
 			bestChromosom = i;
 			tmpPath.resize(chromosom[i].size());
