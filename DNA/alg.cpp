@@ -104,9 +104,10 @@ void GeneticClass::DrawingPopulation(){
 			{
 				for (int pos = 1; pos < siz; pos++)
 				{
-					if ((!visited[nastepniki[poprzednik][pos][0]]))
+					int pozycja = rand() % siz;
+					if ((!visited[nastepniki[poprzednik][pozycja][0]]))
 					{
-						chromosom[i][j] = nastepniki[poprzednik][pos][0];
+						chromosom[i][j] = nastepniki[poprzednik][pozycja][0];
 						visited[chromosom[i][j]] = true;
 						break;
 					}
