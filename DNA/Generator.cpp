@@ -13,16 +13,12 @@ string getLetter(int i){
 	}
 }
 
-void Generator::makePositives(){
-
-}
-
-void Generator::makeNegatives(){
-
-}
-
-void Generator::mix(){
-
+void Generator::interface(){
+	srand(time(NULL));
+	cout << "Podaj wielkosc instancji: " << endl;
+	cin >> number;
+	cout << "Podaj typy bledow: 1-NEG, 2-POZ, 3-OBA" << endl;
+	cin >> type;
 }
 
 void Generator::generujDNA(){
@@ -37,20 +33,46 @@ void Generator::generujDNA(){
 		next += getLetter(rand() % 4);
 		dna.push_back(next);
 	}
+}
 
-	
+void Generator::makePositives(){
 
 }
 
+void Generator::makeNegatives(){
+
+}
+
+void Generator::mix(){
+
+}
+
+void Generator::choosenOption(){
+	switch (type){
+	case 1:
+		makeNegatives();
+		break;
+	case 2:
+		makePositives();
+		break;
+	case 3:
+		makeNegatives();
+		makePositives();
+		break;
+	default:
+		cout << "ERROR" << endl;
+		break;
+	}
+}
+
+
+
 Generator::Generator()
 {
-	srand(time(NULL));
-	cout << "Podaj wielkosc instancji: " << endl;
-	cin >> number;
-	cout << "Podaj typy bledow: 1-NEG, 2-POZ, 3-OBA" << endl;
-	cin >> type;
-	
+	interface();	
 	generujDNA();
+	choosenOption();
+	mix();
 }
 
 Generator::~Generator()
