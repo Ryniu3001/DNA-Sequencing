@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="alg.cpp" />
+    <ClCompile Include="Generator.cpp" />
     <ClCompile Include="graf.cpp" />
     <ClCompile Include="Greedy.cpp" />
     <ClCompile Include="Loader.cpp" />
@@ -19,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="alg.hpp" />
+    <ClInclude Include="Generator.h" />
     <ClInclude Include="graf.hpp" />
     <ClInclude Include="Greedy.h" />
     <ClInclude Include="Loader.h" />

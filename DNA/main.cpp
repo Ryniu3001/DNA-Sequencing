@@ -2,11 +2,14 @@
 #include "alg.hpp"
 #include "Loader.h"
 #include "Greedy.h"
+#include "Generator.h"
 
 using namespace std;
 
 int main()
 {
+	new Generator();
+	
 	clock_t start, stop;
 	vector<string> data = Loader::readFromFile();
 	GraphClass::vertex = data.size();
