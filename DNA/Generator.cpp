@@ -36,15 +36,32 @@ void Generator::generujDNA(){
 }
 
 void Generator::makePositives(){
+	int num;
+	cout << "Podaj liczbe bledow pozytywnych: " << endl;
+	cin >> num;
 
+	for (int i = 0; i < num; i++){
+		string oli = "";
+		for (int i = 0; i < lenght; i++){
+			oli += getLetter(rand() % 4);
+		}
+		dna.push_back(oli);
+	}
 }
 
 void Generator::makeNegatives(){
+	int num;
+	cout << "Podaj liczbe bledow negatywnych: " << endl;
+	cin >> num;
 
+	for (int i = 0; i < num; i++){
+		int that = (rand() % dna.size() - 1);
+		dna.erase(dna.begin() + that);
+	}
 }
 
 void Generator::mix(){
-
+	vector<bool> visited(dna.size());
 }
 
 void Generator::choosenOption(){

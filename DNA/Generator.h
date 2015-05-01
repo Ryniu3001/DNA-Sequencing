@@ -20,10 +20,12 @@ private:
 	int number, type;
 	static const int lenght = 10;
 
+	void interface();
 	void generujDNA();
 	void makePositives();
 	void makeNegatives();
 	void mix();
+	void choosenOption();
 };
 
 #endif
