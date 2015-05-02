@@ -29,7 +29,7 @@ void Generator::generujDNA(){
 	dna.push_back(first);
 	
 	for (int i = 1; i < number; i++){
-		string next = first.substr(1);
+		string next = dna[i-1].substr(1);
 		next += getLetter(rand() % 4);
 		dna.push_back(next);
 	}
@@ -55,13 +55,9 @@ void Generator::makeNegatives(){
 	cin >> num;
 
 	for (int i = 0; i < num; i++){
-		int that = (rand() % dna.size() - 1);
+		int that = (rand() % dna.size());
 		dna.erase(dna.begin() + that);
 	}
-}
-
-void Generator::mix(){
-	vector<bool> visited(dna.size());
 }
 
 void Generator::choosenOption(){
@@ -82,6 +78,42 @@ void Generator::choosenOption(){
 	}
 }
 
+void Generator::mix(){
+	vector<string> tmpDNA;
+	vector<bool> visited(dna.size());
+	for (int i = 0; i < dna.size(); i++){
+		int that = rand() % dna.size();
+		if (visited[that]) 
+		{
+			int i = 0;
+			while (true){
+				if (visited[i])
+					i++;
+				else
+					break;
+			}
+			that = i;
+		}
+		visited[that] = true;
+		tmpDNA.push_back(dna[that]);
+	}
+	dna = tmpDNA;
+}
+
+void Generator::saveToFile(){
+	string name;
+	cout << "Podaj nazwe pliku: " << endl;
+	cin >> name;
+	name = ".\\resources\\" + name + ".txt";
+
+	ofstream out(name);
+
+
+	for (int i = 0; i < dna.size(); i++){
+		out << dna[i] << endl;
+	}
+	out.close();
+}
 
 
 Generator::Generator()
@@ -90,6 +122,7 @@ Generator::Generator()
 	generujDNA();
 	choosenOption();
 	mix();
+	saveToFile();
 }
 
 Generator::~Generator()

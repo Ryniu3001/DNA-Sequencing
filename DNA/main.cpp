@@ -16,19 +16,17 @@ int main()
     Graph.create();
 	Graph.calculateWeight(data);
 
-	//	Graph.print();
-	//	Loader::showTime(start, stop);
+//	Graph.print();
+//	Loader::showTime(start, stop);
 
-	/////////////////  GREEDY ///////////////////
-	//Greedy GR;
-	//GR.start(0, 0);
-	//GR.printResult();
+//	Greedy greedy;
+//	greedy.start(0, 0);
+//	greedy.printResult();
 
-	/////////////////  GENETIC ///////////////////
 	GeneticClass Genetic;
     Genetic.Interface();
 
-	cin.get();
+	cin.get(); cin.get();
     return 0;
 }
 

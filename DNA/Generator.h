@@ -5,6 +5,7 @@
 #include <vector>
 #include <ctime>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -26,6 +27,7 @@ private:
 	void makeNegatives();
 	void mix();
 	void choosenOption();
+	void saveToFile();
 };
 
 #endif
