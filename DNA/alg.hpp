@@ -17,6 +17,7 @@ private:
 	vector<vector<int>> children;
 	vector<int> ratings;
 	vector<int> path;
+	vector< vector < vector<int> > > nastepniki;
 
 	list<int> createList(vector<int> chromosome);
 	int removeFromList(int a, list<int> lista);
@@ -26,6 +27,9 @@ private:
 	int bestScoreInAll;
 
 	void initializeVectors();
+	void generateNastepniki();
+	void checkPositives();
+	void checkOthers();
 	void DrawingPopulation();
 	int Rating();
 	void Crossover(int par1, int par2, vector<int> &child1, vector<int> &child2);

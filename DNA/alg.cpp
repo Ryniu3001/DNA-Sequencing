@@ -58,15 +58,11 @@ void GeneticClass::initializeVectors(){
 	}
 }
 
-void GeneticClass::DrawingPopulation(){
-	srand(time(NULL));
-
-	/////////////////START: NIEOPTYMALNY KOD DO PRZETESTOWANIA WYNIKU ////////////////////////
-
+void GeneticClass::generateNastepniki(){
 	// Tworzenie wektora wierzcholkow, kazdy wierzcholek ma wektor wierzcholkow ktore pasuja do niego i maja ocene mniejsza od 1000
-	vector< vector < vector<int> > > nastepniki(GraphClass::vertex);
+	nastepniki.resize(GraphClass::vertex);
 	for (int i = 0; i <GraphClass::vertex; i++)		{
-		for (int j = 0; j < GraphClass::vertex; j++)	
+		for (int j = 0; j < GraphClass::vertex; j++)
 		{
 			if (GraphClass::matrix[i][j] != 1000){
 				vector<int> para(2);
@@ -78,7 +74,46 @@ void GeneticClass::DrawingPopulation(){
 		sort(nastepniki[i].begin(), nastepniki[i].end(), rosnaco);
 		// cout << i << ":\t";		showVector(nastepniki[i]);
 	}
+}
 
+void listaOdniesienia(){
+	/*
+	// lista odniesienia
+	list<int> listaOdn(GraphClass::vertex);
+	list<int>::iterator iter;
+	for (int i = 0; i < lc; i++)
+	{
+	listaOdn.clear();
+	for (int ii = 0; ii < GraphClass::vertex; ii++)
+	listaOdn.push_back(ii);
+
+	for (int j = 0; j < GraphClass::vertex; j++)
+	{
+	int result = 0;
+	int chrom = chromosom[i][j];
+	for (iter = listaOdn.begin(); iter != listaOdn.end(); iter++)
+	if (*iter == chrom)
+	break;
+	else
+	result++;
+
+	chromosom[i][j] = result;
+	listaOdn.erase(iter);
+	}
+	}
+
+
+
+	/*  for (int i=0;i<lc;i++){      // Wypisywanie chromosomow (zakodowanych)
+	cout << endl;
+	for (int j=0; j<GraphClass::vertex; j++)
+	cout << chromosom[i][j]<< " ";
+	}
+	cout << endl;
+	*/
+}
+
+void GeneticClass::checkPositives(){
 	///////////////////////////////SZUKANIE SCIEZEK Z PRZESUNIECIEM 1//////////////////////////////////////////////
 	for (int i = 0; i < lc; i++){
 		vector <bool> visited(GraphClass::vertex);
@@ -121,13 +156,12 @@ void GeneticClass::DrawingPopulation(){
 				break;
 			}
 			/*if (j == GraphClass::vertex - 1)
-				printf("Dotrwalem do konca !\n");*/
+			printf("Dotrwalem do konca !\n");*/
 		}
 	}
+}
 
-	/////////////////////////////////////////////////////////////////////////////
-
-	/*
+void GeneticClass::checkOthers(){
 	for (int i = 0; i < lc; i++){
 		// tworzony wektor odzwiedzonych wypelniony false
 		vector <bool> visited(GraphClass::vertex);
@@ -193,40 +227,13 @@ void GeneticClass::DrawingPopulation(){
 			}
 		}
 	}
-	*/
-	// lista odniesienia
-	//list<int> listaOdn(GraphClass::vertex);
-	//list<int>::iterator iter;
-	//for (int i = 0; i < lc; i++)
-	//{
-	//	listaOdn.clear();
-	//	for (int ii = 0; ii < GraphClass::vertex; ii++)
-	//		listaOdn.push_back(ii);
+}
 
-	//	for (int j = 0; j < GraphClass::vertex; j++)
-	//	{
-	//		int result = 0;
-	//		int chrom = chromosom[i][j];
-	//		for (iter = listaOdn.begin(); iter != listaOdn.end(); iter++)
-	//		if (*iter == chrom)
-	//			break;
-	//		else
-	//			result++;
-
-	//		chromosom[i][j] = result;
-	//		listaOdn.erase(iter);
-	//	}
-	//}
-	/////////////////STOP: NIEOPTYMALNY KOD DO PRZETESTOWANIA WYNIKU ////////////////////////
-
-
-	/*  for (int i=0;i<lc;i++){      // Wypisywanie chromosomow (zakodowanych)
-	cout << endl;
-	for (int j=0; j<GraphClass::vertex; j++)
-	cout << chromosom[i][j]<< " ";
-	}
-	cout << endl;
-	*/
+void GeneticClass::DrawingPopulation(){
+	srand(time(NULL));
+	generateNastepniki();
+	checkPositives();
+//	checkOthers();
 } 
 
 int GeneticClass::TournamentSelection(int x){
