@@ -6,6 +6,8 @@
 #include <ctime>
 #include <string>
 #include <fstream>
+#include <cstdio>
+#include <cstdlib>
 
 using namespace std;
 
@@ -18,9 +20,10 @@ public:
 	~Generator();
 
 private:
-	int number, type;
 	static const int lenght = 10;
-
+	string name;
+	int number, type;
+	
 	void interface();
 	void generujDNA();
 	void makePositives();

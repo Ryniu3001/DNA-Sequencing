@@ -17,6 +17,7 @@ void Generator::interface(){
 	srand(time(NULL));
 	cout << "Podaj wielkosc instancji: " << endl;
 	cin >> number;
+	name = "." + to_string(number);
 	cout << "Podaj typy bledow: 1-NEG, 2-POZ, 3-OBA" << endl;
 	cin >> type;
 }
@@ -39,6 +40,7 @@ void Generator::makePositives(){
 	int num;
 	cout << "Podaj liczbe bledow pozytywnych: " << endl;
 	cin >> num;
+	name += "+" + to_string(num);
 
 	for (int i = 0; i < num; i++){
 		string oli = "";
@@ -53,6 +55,7 @@ void Generator::makeNegatives(){
 	int num;
 	cout << "Podaj liczbe bledow negatywnych: " << endl;
 	cin >> num;
+	name += "-" + to_string(num);
 
 	for (int i = 0; i < num; i++){
 		int that = (rand() % dna.size());
@@ -101,12 +104,12 @@ void Generator::mix(){
 }
 
 void Generator::saveToFile(){
-	string name;
+	string nameFile;
 	cout << "Podaj nazwe pliku: " << endl;
-	cin >> name;
-	name = ".\\resources\\" + name + ".txt";
+	cin >> nameFile;
+	string file = ".\\resources\\" + nameFile + name + ".txt";
 
-	ofstream out(name);
+	ofstream out(file);
 
 
 	for (int i = 0; i < dna.size(); i++){

@@ -8,7 +8,7 @@ using namespace std;
 
 int main()
 {
-//	new Generator();
+	new Generator();
 	
 	clock_t start, stop;
 	vector<string> data = Loader::readFromFile();
