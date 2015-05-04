@@ -40,6 +40,11 @@ bool rosnaco(vector<int> const a, vector<int> const b)
 }
 
 void GeneticClass::initializeVectors(){
+	path.clear();
+	ratings.clear();
+	chromosom.clear();
+	children.clear();
+	
 	for (int i = 0; i < GraphClass::vertex; i++)
 		path.push_back(0);
 
@@ -165,8 +170,7 @@ void GeneticClass::checkOthers(){
 	for (int i = 0; i < lc; i++){
 		// tworzony wektor odzwiedzonych wypelniony false
 		vector <bool> visited(GraphClass::vertex);
-		for (int g = 0; g<visited.size(); g++)
-			visited[g] = false;
+		
 
 		// wypelnianie pierwszego wierzcholka w chromosomie losowo
 		chromosom[i][0] = rand() % GraphClass::vertex;
@@ -217,12 +221,12 @@ void GeneticClass::checkOthers(){
 			else		// jeœli brak pasuj¹cych nastêpników, bierz losowo
 			{
 				for (int l = 0; l < GraphClass::vertex; l++)
-				if (!visited[l])
-				{
-					visited[l] = true;
-					chromosom[i][j] = l;
-					break;
-				}
+					if (!visited[l])
+					{
+						visited[l] = true;
+						chromosom[i][j] = l;
+						break;
+					}
 				//printf("Wierzcholek %d nie ma nastepnikow !!??!!?? %d %d\n", chromosom[i][j - 1], i, j - 1);
 			}
 		}
@@ -232,8 +236,15 @@ void GeneticClass::checkOthers(){
 void GeneticClass::DrawingPopulation(){
 	srand(time(NULL));
 	generateNastepniki();
+
+	cout << "--- CHECK POSITIVES ---" << endl;
+	initializeVectors();
 	checkPositives();
-//	checkOthers();
+	showBest();
+
+	cout << "--- CHECK OTHERS ---" << endl;
+	initializeVectors();
+	checkOthers();
 } 
 
 int GeneticClass::TournamentSelection(int x){
@@ -314,22 +325,26 @@ int GeneticClass::Rating()
 }
 
 void GeneticClass::showBest(){
-	cout << "\nGenetic best score: " << bestScoreInAll << "\n";
-	unsigned int dnaLen = 0;
+	cout << "\nGenetic best score: " << bestScoreInAll << endl << endl;
+	//printBest();
+}
+
+void GeneticClass::printBest(){
+	int dnaLength = 0;
 	for (int i = 0; i<path.size(); i++){
 		if (i > 0)
 		{
 			cout << " <" << GraphClass::matrix[path[i - 1]][path[i]] << "> " << path[i];
-			dnaLen += GraphClass::matrix[path[i - 1]][path[i]];
+			dnaLength += GraphClass::matrix[path[i - 1]][path[i]];
 		}
 		else
 		{
 			cout << path[i];
 		}
 	}
-	cout << endl << "DlugoscDNA: "<< dnaLen + 10;		//TODO: Tak samo jak przy generowaniu populacji cos z ta 10 trzeba zrobic.
-	cout << endl;
+	cout << endl << "DlugoscDNA: " << dnaLength + 10;		//TODO: Tak samo jak przy generowaniu populacji cos z ta 10 trzeba zrobic.
 }
+
 
 void GeneticClass::checksRepeatsInChromosom(){
 	cout << "SPRAWDZAMY POWTORZENIA IN CHROMOSOM ... ";
@@ -370,7 +385,6 @@ void GeneticClass::Interface(){
 	int algorithmIteration = 1;
 	int score = 0, parent1, parent2;
 
-	initializeVectors();
 	DrawingPopulation();
 	bestScoreInAll = Rating();
 	cout << "Rodzice: " << bestScoreInAll << endl;

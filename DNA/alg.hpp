@@ -36,10 +36,11 @@ private:
 	void Mutation(vector<int> &chomosome);
 	int TournamentSelection(int x); //x - liczba chromosow w turnieju
 	void showBest();
+	void printBest();
 
 	void checksRepeatsInChromosom();
 	void checksRepeatsInSet();
-	//bool rosnaco(vector<int> *const a, vector<int> *const b);
+
 public:
 	void Interface();
 	~GeneticClass();
