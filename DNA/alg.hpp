@@ -39,6 +39,7 @@ private:
 
 	void checksRepeatsInChromosom();
 	void checksRepeatsInSet();
+	void generateChromosom(int &i, int &j, vector<bool> &visitedd, vector<vector<int>> &chrom, unsigned int &dnaLenn, int check);
 
 public:
 	void Interface();

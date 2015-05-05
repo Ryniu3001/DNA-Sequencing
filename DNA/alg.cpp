@@ -195,18 +195,17 @@ void GeneticClass::DrawingPopulation(){
 	for (int i = 0; i < lc; i++){
 		vector <bool> visited(GraphClass::vertex);
 		for (int g = 0; g<visited.size(); g++)
-			visited[g] = false;
-		bool cut = false;													// decyduje czy odcinamy DNA
+			visited[g] = false;												
 		unsigned int dnaLen = 10;											//TODO: zmienic 10 na jakas zmienna czy cos
 		chromosom[i][0] = i % GraphClass::vertex;							//poczatkowy wierzcholek
 		visited[chromosom[i][0]] = true;
 		int j = 0;
-		while ((cut == false) && (j < GraphClass::vertex))
+		while  (j < GraphClass::vertex)
 		{
 			j++;
 			int siz = nastepniki[chromosom[i][j - 1]].size();				// liczba pasujacych nastepnikow
 			int poprzednik = chromosom[i][j - 1];
-			if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (dnaLen < Loader::optimum)) //&& (nastepniki[poprzednik][0][1] == 1)) //TODO: Poki co bez tego warunku
+			if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (dnaLen < Loader::optimum) && (i<GraphClass::vertex)) //&& (nastepniki[poprzednik][0][1] == 1)) //TODO: Poki co bez tego warunku
 			{																					// Dla pozytywnych generujemy po najnizszych ocenach
 				chromosom[i][j] = nastepniki[poprzednik][0][0];
 				dnaLen += nastepniki[poprzednik][0][1];
@@ -214,7 +213,8 @@ void GeneticClass::DrawingPopulation(){
 			}
 			else if ((siz) && (dnaLen < Loader::optimum)) //Jesli najlepszy bedzie zajety to bierzemy nastepny nieodwiedzony z listy nastepnikow 
 			{
-				for (int pos = 1; pos < siz; pos++)
+				int pos;
+				for (pos = 0; pos < siz; pos++)
 				{
 					int pozycja = rand() % siz;
 					if ((!visited[nastepniki[poprzednik][pozycja][0]]))
@@ -224,21 +224,21 @@ void GeneticClass::DrawingPopulation(){
 						break;
 					}
 				}
-				chromosom[i].resize(j);
-				break;
+				if (pos == siz)				//nie udalo sie wybrac nastepnika wiec przerywamy
+				{
+					chromosom[i].resize(j);					
+					break;
+				}
 			}
 			else
 			{
 				chromosom[i].resize(j);
 				break;
 			}
-			/*if (j == GraphClass::vertex - 1)
-			printf("Dotrwalem do konca !\n");*/
+
 		}
 	}
 }	//TODO: przypadek dla 2 mozliwosci wyboru w przesuniêciu o 1
-	//TODO: po wyborze dla kazdego wierzcho³ka najlepszego u³o¿enia - kompletna losowoœæ do d³ugoœci N
-	//todo: o czymœ jeszcze rozmawialiœmy ? 
 
 int GeneticClass::TournamentSelection(int x){
 	int best = (rand()*rand()) % lc;
@@ -335,7 +335,7 @@ void GeneticClass::printBest(){
 		}
 	}
 
-	cout << endl << "Dlugosc DNA: " << dnaLength + 10;		//TODO: Tak samo jak przy generowaniu populacji cos z ta 10 trzeba zrobic.
+	cout << endl << "Dlugosc DNA: " << dnaLength+10 ;		//TODO: Tak samo jak przy generowaniu populacji cos z ta 10 trzeba zrobic.
 }
 
 
