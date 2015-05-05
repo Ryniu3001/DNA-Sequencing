@@ -11,7 +11,7 @@ using namespace std;
 
 class GraphClass{
 public:
-	static const int DEPTH = 6; //Przy zmianie robic Rebuild Solution
+	static const int DEPTH = 8; //Przy zmianie robic Rebuild Solution
     static int vertex;    
 	static vector<vector<int>> matrix;
     void create();			//Tworzenie grafu

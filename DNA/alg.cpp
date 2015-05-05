@@ -220,6 +220,7 @@ void GeneticClass::DrawingPopulation(){
 					if ((!visited[nastepniki[poprzednik][pozycja][0]]))
 					{
 						chromosom[i][j] = nastepniki[poprzednik][pozycja][0];
+						dnaLen += nastepniki[poprzednik][pozycja][1];
 						visited[chromosom[i][j]] = true;
 						break;
 					}
