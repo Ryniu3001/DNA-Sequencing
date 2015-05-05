@@ -28,13 +28,12 @@ private:
 
 	void initializeVectors();
 	void generateNastepniki();
-	void checkPositives();
 	void checkOthers();
 	void DrawingPopulation();
 	int Rating();
 	void Crossover(int par1, int par2, vector<int> &child1, vector<int> &child2);
 	void Mutation(vector<int> &chomosome);
-	int TournamentSelection(int x); //x - liczba chromosow w turnieju
+	int TournamentSelection(int x);		//x - liczba chromosow w turnieju
 	void showBest();
 	void printBest();
 
