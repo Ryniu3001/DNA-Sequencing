@@ -236,7 +236,9 @@ void GeneticClass::DrawingPopulation(){
 			printf("Dotrwalem do konca !\n");*/
 		}
 	}
-} 
+}	//TODO: przypadek dla 2 mozliwosci wyboru w przesuniêciu o 1
+	//TODO: po wyborze dla kazdego wierzcho³ka najlepszego u³o¿enia - kompletna losowoœæ do d³ugoœci N
+	//todo: o czymœ jeszcze rozmawialiœmy ? 
 
 int GeneticClass::TournamentSelection(int x){
 	int best = (rand()*rand()) % lc;
@@ -277,19 +279,18 @@ int getWorst(vector<int> chromosome){
 }
 
 void GeneticClass::Mutation(vector<int> &chromosome){
-	int target1, target2;
-	target1 = getWorst(chromosome);
-	do target2 = rand() % GraphClass::vertex;
+	int target2, target1 = rand() % chromosome.size();	//GraphClass::vertex;
+	do target2 = rand() % chromosome.size();
 	while (target1 == target2);
-
-//	for (int i = 0; i < chromosome.size(); i++)
-//		cout << chromosome[i] << "  ";
-//	cout << endl; 
 
 	int temp = chromosome[target2];
 	chromosome[target2] = chromosome[target1];
 	chromosome[target1] = temp;
-}
+
+	//	for (int i = 0; i < chromosome.size(); i++)
+	//		cout << chromosome[i] << "  ";
+	//	cout << endl; 
+}	// TODO: mutacja zamienia w vektorze 2 elementy czy ma mozliwosc dodania nowego wyrazu lub zamiany na nowy w konfiguracji
 
 int GeneticClass::Rating()
 {
