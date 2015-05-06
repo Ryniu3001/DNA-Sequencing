@@ -26,7 +26,7 @@ int main()
 	GeneticClass Genetic;
     Genetic.Interface();
 
-	cin.get(); cin.get();
+	cin.get(); 
     return 0;
 }
 

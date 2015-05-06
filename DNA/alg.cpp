@@ -265,7 +265,8 @@ void GeneticClass::Crossover(int parent1, int parent2, vector<int> &child1, vect
 		child1[i] = chromosom[parent2][i];
 		child2[i] = chromosom[parent1][i];
 	}
-}
+}	
+//	TODO: krzy¿owanie przy przesuniêciu powy¿ej 1
 
 int getWorst(vector<int> chromosome){
 	int worst = 0, score = -1;
@@ -280,18 +281,59 @@ int getWorst(vector<int> chromosome){
 }
 
 void GeneticClass::Mutation(vector<int> &chromosome){
-	int target2, target1 = rand() % chromosome.size();	//GraphClass::vertex;
-	do target2 = rand() % chromosome.size();
-	while (target1 == target2);
+/*	path.clear();
+	path.push_back(2);
+	path.push_back(4);
+	path.push_back(3);
+	path.push_back(1);
+	path.push_back(0);
+*/
+	int index1 = -1;
+	int index2 = -1;
+	int node = -1;
+	for (int i = 0; i < (chromosome.size() - 1); i++){
+		int current = chromosome[i];
+		int next = chromosome[i + 1]; 
+		int size = nastepniki[current].size() - 1;
 
-	int temp = chromosome[target2];
-	chromosome[target2] = chromosome[target1];
-	chromosome[target1] = temp;
+		for (int j = 0; j < size; j++){
+			if (nastepniki[current][j][0] == next){
+				if (nastepniki[current][j][1] == nastepniki[current][j+1][1]){
+					node = nastepniki[current][j + 1][0];
+					break;
+				}
+			}
+		}
 
-	//	for (int i = 0; i < chromosome.size(); i++)
-	//		cout << chromosome[i] << "  ";
-	//	cout << endl; 
-}	// TODO: mutacja zamienia w vektorze 2 elementy czy ma mozliwosc dodania nowego wyrazu lub zamiany na nowy w konfiguracji
+		if (node > 0){
+			index1 = i+1;
+			for (int j = 0; j < chromosome.size(); j++){
+				if (chromosome[j] == node){
+					index2 = j;
+					break;
+				}
+			}
+			break;
+		}
+	}
+
+	if (index2 > 0){
+		int temp = chromosome[index2];
+		chromosome[index2] = chromosome[index1];
+		chromosome[index1] = temp;
+	}
+	else {
+		chromosome[index1] = node;
+	}
+
+
+/*	for (int i = 0; i < chromosome.size(); i++)
+		cout << chromosome[i] << "  ";
+	cout << endl; 
+*/
+}
+// TODO: mutacja zamienia w vektorze 2 elementy czy ma mozliwosc dodania nowego wyrazu lub zamiany na nowy w konfiguracji
+// TODO: zamienia przy 2 równie dobrych nastêpnikach
 
 int GeneticClass::Rating()
 {
@@ -406,6 +448,7 @@ void GeneticClass::Interface(){
 		cout << "Populacja_" << z << "  = " << score << endl;
 	}
 */
+//	Mutation(path);
 	showBest();
 }
 

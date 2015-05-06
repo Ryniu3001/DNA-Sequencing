@@ -17,7 +17,7 @@ private:
 	vector<vector<int>> children;
 	vector<int> ratings;
 	vector<int> path;
-	vector< vector < vector<int> > > nastepniki;
+	vector< vector < vector<int> > > nastepniki;	// [0] -> wierzcholek [1] -> przesuniecie
 
 	list<int> createList(vector<int> chromosome);
 	int removeFromList(int a, list<int> lista);
