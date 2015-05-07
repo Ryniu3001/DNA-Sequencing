@@ -241,7 +241,7 @@ void GeneticClass::DrawingPopulation(){
 		unsigned int dnaLen = 10;											//TODO: zmienic 10 na jakas zmienna czy cos
 		int j = 1;
 
-		createChromosom(j, visited, chromosom[i], dnaLen, !(i < GraphClass::vertex));
+		createChromosom(j, visited, chromosom[i], dnaLen, true);
 	}
 }	//TODO: przypadek dla 2 mozliwosci wyboru w przesuniêciu o 1
 
@@ -285,59 +285,29 @@ int getWorst(vector<int> chromosome){
 }
 
 void GeneticClass::Mutation(vector<int> &chromosome){
-/*	path.clear();
-	path.push_back(2);
-	path.push_back(4);
-	path.push_back(3);
-	path.push_back(1);
-	path.push_back(0);
-*/
-	int index1 = -1;
-	int index2 = -1;
-	int node = -1;
-	for (int i = 0; i < (chromosome.size() - 1); i++){
-		int current = chromosome[i];
-		int next = chromosome[i + 1]; 
-		int size = nastepniki[current].size() - 1;
-
-		for (int j = 0; j < size; j++){
-			if (nastepniki[current][j][0] == next){
-				if (nastepniki[current][j][1] == nastepniki[current][j+1][1]){
-					node = nastepniki[current][j + 1][0];
-					break;
-				}
-			}
+	srand(time(NULL));
+	int length = chromosome.size();
+	int index = rand() % length;
+	int checkVertex = chromosome[index];
+	int successorsAmount = nastepniki[checkVertex].size();
+	
+	if ((index != length-1) && (GraphClass::matrix[checkVertex][chromosome[index + 1]] != nastepniki[checkVertex][0][1])) 
+		// Jezeli wylosowany wierzcholek nie jest ostatni i jego nastepnik w chromosomie nie jest najlepszy to buduj od tego miejsca
+	{
+		vector<bool> visited(GraphClass::vertex, false);
+		unsigned int dnaLen = 10;												//TODO: Zamienic 10 na jakies pole w klasie uzupelniane przy wczytywaniu pliku
+		for (int i = 0; i < index; i++)
+		{
+			visited[chromosome[i]] = true;
+			dnaLen += GraphClass::matrix[chromosome[i]][chromosome[i + 1]];
 		}
-
-		if (node > 0){
-			index1 = i+1;
-			for (int j = 0; j < chromosome.size(); j++){
-				if (chromosome[j] == node){
-					index2 = j;
-					break;
-				}
-			}
-			break;
-		}
-	}
-
-	if (index2 > 0){
-		int temp = chromosome[index2];
-		chromosome[index2] = chromosome[index1];
-		chromosome[index1] = temp;
-	}
-	else {
-		chromosome[index1] = node;
+		visited[index] = true;
+		chromosome.resize(GraphClass::vertex);
+		createChromosom(index + 1, visited, chromosome, dnaLen, false);
 	}
 
 
-/*	for (int i = 0; i < chromosome.size(); i++)
-		cout << chromosome[i] << "  ";
-	cout << endl; 
-*/
 }
-// TODO: mutacja zamienia w vektorze 2 elementy czy ma mozliwosc dodania nowego wyrazu lub zamiany na nowy w konfiguracji
-// TODO: zamienia przy 2 równie dobrych nastêpnikach
 
 int GeneticClass::Rating()
 {
@@ -355,7 +325,7 @@ int GeneticClass::Rating()
 		}
 	}
 
-	if ((bestScoreInAll > bestRating) || (bestScoreInAll == 0))
+	if ((bestScoreInAll < bestRating) || (bestScoreInAll == 0))
 	{
 		path = chromosom[bestChromosom];
 		bestScoreInAll = bestRating;
@@ -420,18 +390,19 @@ void GeneticClass::checksRepeatsInSet(){
 
 ///////////////////////////////  INTERFACE  ////////////////////////////////
 void GeneticClass::Interface(){
-	lc = 3000;                        
+	lc = 50000;                        
 
-	int algorithmIteration = 1;
+	int algorithmIteration = 50;
 	int score = 0, parent1, parent2;
 
 	DrawingPopulation();
 	Rating();
 	cout << "Rodzice: " << bestScoreInAll << endl;
 
-/*	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
+	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
 	for (int z = 0; z<algorithmIteration; z++){
 		int P = -1;		                            // licznik nowej populacji
+		/*
 		while (P < lc - 2){
 			parent1 = TournamentSelection(10);
 			do
@@ -440,8 +411,8 @@ void GeneticClass::Interface(){
 			Crossover(parent1, parent2, children[P+1], children[P+2]);
 			P += 2;
 		}
-
-		int mutationIteration = P / 2;
+		*/
+		int mutationIteration = 1000;
 		for (int i = 0; i<mutationIteration; i++){
 			int target = TournamentSelection(10);
 			Mutation(chromosom[target]);//chromosom[target]);				//		przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children //
@@ -451,7 +422,7 @@ void GeneticClass::Interface(){
 		score = Rating();
 		cout << "Populacja_" << z << "  = " << score << endl;
 	}
-*/
+
 //	Mutation(path);
 	showBest();
 }
