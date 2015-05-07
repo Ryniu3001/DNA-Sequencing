@@ -186,58 +186,62 @@ void GeneticClass::generateNastepniki(){
 	}
 }
 
+void GeneticClass::createChromosom(int j, vector <bool> &visited, vector<int> &chrom, int dnaLen, bool random)
+{
+	while (j < GraphClass::vertex)
+	{
+		int siz = nastepniki[chrom[j - 1]].size();				// liczba pasujacych nastepnikow
+		int poprzednik = chrom[j - 1];
+		if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (dnaLen < Loader::optimum) && (!random))
+		{
+			chrom[j] = nastepniki[poprzednik][0][0];
+			dnaLen += nastepniki[poprzednik][0][1];
+			visited[chrom[j]] = true;
+		}
+		else if ((siz) && (dnaLen < Loader::optimum)) //Jesli najlepszy bedzie zajety to bierzemy nastepny nieodwiedzony z listy nastepnikow 
+		{
+			int pos;
+			for (pos = 0; pos < siz; pos++)
+			{
+				int pozycja = rand() % siz;
+				if ((!visited[nastepniki[poprzednik][pozycja][0]]))
+				{
+					chrom[j] = nastepniki[poprzednik][pozycja][0];
+					dnaLen += nastepniki[poprzednik][pozycja][1];
+					visited[chrom[j]] = true;
+					break;
+				}
+			}
+			if (pos == siz)				//nie udalo sie wybrac nastepnika wiec przerywamy
+			{
+				chrom.resize(j);
+				break;
+			}
+		}
+		else
+		{
+			chrom.resize(j);
+			break;
+		}
+		j++;
+	}
+}
+
 void GeneticClass::DrawingPopulation(){
 	srand(time(NULL));
 	initializeVectors();
 	generateNastepniki();
 		
-	///////////////////////////////SZUKANIE SCIEZEK Z PRZESUNIECIEM 1//////////////////////////////////////////////
 	for (int i = 0; i < lc; i++){
 		vector <bool> visited(GraphClass::vertex);
 		for (int g = 0; g<visited.size(); g++)
 			visited[g] = false;												
-		unsigned int dnaLen = 10;											//TODO: zmienic 10 na jakas zmienna czy cos
 		chromosom[i][0] = i % GraphClass::vertex;							//poczatkowy wierzcholek
 		visited[chromosom[i][0]] = true;
-		int j = 0;
-		while  (j < GraphClass::vertex)
-		{
-			j++;
-			int siz = nastepniki[chromosom[i][j - 1]].size();				// liczba pasujacych nastepnikow
-			int poprzednik = chromosom[i][j - 1];
-			if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (dnaLen < Loader::optimum) && (i<GraphClass::vertex)) //&& (nastepniki[poprzednik][0][1] == 1)) //TODO: Poki co bez tego warunku
-			{																					// Dla pozytywnych generujemy po najnizszych ocenach
-				chromosom[i][j] = nastepniki[poprzednik][0][0];
-				dnaLen += nastepniki[poprzednik][0][1];
-				visited[chromosom[i][j]] = true;
-			}
-			else if ((siz) && (dnaLen < Loader::optimum)) //Jesli najlepszy bedzie zajety to bierzemy nastepny nieodwiedzony z listy nastepnikow 
-			{
-				int pos;
-				for (pos = 0; pos < siz; pos++)
-				{
-					int pozycja = rand() % siz;
-					if ((!visited[nastepniki[poprzednik][pozycja][0]]))
-					{
-						chromosom[i][j] = nastepniki[poprzednik][pozycja][0];
-						dnaLen += nastepniki[poprzednik][pozycja][1];
-						visited[chromosom[i][j]] = true;
-						break;
-					}
-				}
-				if (pos == siz)				//nie udalo sie wybrac nastepnika wiec przerywamy
-				{
-					chromosom[i].resize(j);					
-					break;
-				}
-			}
-			else
-			{
-				chromosom[i].resize(j);
-				break;
-			}
+		unsigned int dnaLen = 10;											//TODO: zmienic 10 na jakas zmienna czy cos
+		int j = 1;
 
-		}
+		createChromosom(j, visited, chromosom[i], dnaLen, !(i < GraphClass::vertex));
 	}
 }	//TODO: przypadek dla 2 mozliwosci wyboru w przesuniêciu o 1
 
