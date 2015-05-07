@@ -285,13 +285,8 @@ int getWorst(vector<int> chromosome){
 }
 
 void GeneticClass::Mutation(vector<int> &chromosome){
-/*	path.clear();
-	path.push_back(2);
-	path.push_back(4);
-	path.push_back(3);
-	path.push_back(1);
-	path.push_back(0);
-*/
+
+
 	int index1 = -1;
 	int index2 = -1;
 	int node = -1;
@@ -322,13 +317,22 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 	}
 
 	if (index2 > 0){
-		int temp = chromosome[index2];
-		chromosome[index2] = chromosome[index1];
-		chromosome[index1] = temp;
+		chromosome[index1] = chromosome[index2];
 	}
 	else {
 		chromosome[index1] = node;
 	}
+
+	vector<bool> visited(GraphClass::vertex);
+	int rate = 10;
+	visited[chromosome[0]] = true;
+	for (int i = 0; i < index1; i++){
+		int current = chromosome[i];
+		int next = chromosome[i + 1];
+		rate += GraphClass::matrix[current][next];
+		visited[next] = true;
+	}
+	createChromosom(index1+1, visited, chromosome, rate, false);
 
 
 /*	for (int i = 0; i < chromosome.size(); i++)
