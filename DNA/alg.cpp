@@ -1,6 +1,6 @@
 #include "alg.hpp"
 
-// DO USUNIÊCIA
+// DO USUNIÊCIA  
 void GeneticClass::checkOthers(){
 	for (int i = 0; i < lc; i++){
 		// tworzony wektor odzwiedzonych wypelniony false
