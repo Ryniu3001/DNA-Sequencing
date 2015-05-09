@@ -233,9 +233,7 @@ void GeneticClass::DrawingPopulation(){
 	generateNastepniki();
 		
 	for (int i = 0; i < lc; i++){
-		vector <bool> visited(GraphClass::vertex);
-		for (int g = 0; g<visited.size(); g++)
-			visited[g] = false;												
+		vector <bool> visited(GraphClass::vertex);											
 		chromosom[i][0] = i % GraphClass::vertex;							//poczatkowy wierzcholek
 		visited[chromosom[i][0]] = true;
 		unsigned int dnaLen = 10;											//TODO: zmienic 10 na jakas zmienna czy cos
@@ -316,24 +314,25 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 		}
 	}
 
-	if (index2 > 0){
-		chromosome[index1] = chromosome[index2];
-	}
-	else {
-		chromosome[index1] = node;
-	}
+	if (index1 >= 0){
+		if (index2 > 0)
+			chromosome[index1] = chromosome[index2];
+		else 
+			chromosome[index1] = node;
+	
 
-	vector<bool> visited(GraphClass::vertex);
-	int rate = 10;
-	visited[chromosome[0]] = true;
-	for (int i = 0; i < index1; i++){
-		int current = chromosome[i];
-		int next = chromosome[i + 1];
-		rate += GraphClass::matrix[current][next];
-		visited[next] = true;
+		vector<bool> visited(GraphClass::vertex);
+		int rate = 10;
+		visited[chromosome[0]] = true;
+		for (int i = 0; i < index1; i++){
+			int current = chromosome[i];
+			int next = chromosome[i + 1];
+			rate += GraphClass::matrix[current][next];
+			visited[next] = true;
+		}
+		chromosome.resize(GraphClass::vertex);
+		createChromosom(index1+1, visited, chromosome, rate, false);
 	}
-	createChromosom(index1+1, visited, chromosome, rate, false);
-
 
 /*	for (int i = 0; i < chromosome.size(); i++)
 		cout << chromosome[i] << "  ";
@@ -349,7 +348,6 @@ int GeneticClass::Rating()
 	vector<int> chromosomBestPath;
 	fill(ratings.begin(), ratings.end(), 0);
 	for (int i = 0; i<lc; i++){
-		vector<int> tmpPath(GraphClass::vertex);
 		ratings[i] = chromosom[i].size();				
 
 		if ((ratings[i] > bestRating) || (bestRating == -1))
@@ -359,7 +357,7 @@ int GeneticClass::Rating()
 		}
 	}
 
-	if ((bestScoreInAll > bestRating) || (bestScoreInAll == 0))
+	if ((bestScoreInAll < bestRating) || (bestScoreInAll == 0))
 	{
 		path = chromosom[bestChromosom];
 		bestScoreInAll = bestRating;
@@ -377,12 +375,12 @@ void GeneticClass::printBest(){
 	for (int i = 0; i<path.size(); i++){
 		if (i > 0)
 		{
-			cout << " <" << GraphClass::matrix[path[i - 1]][path[i]] << "> " << path[i];
+		//	cout << " <" << GraphClass::matrix[path[i - 1]][path[i]] << "> " << path[i];
 			dnaLength += GraphClass::matrix[path[i - 1]][path[i]];
 		}
 		else
 		{
-			cout << path[i];
+		//	cout << path[i];
 		}
 	}
 
@@ -426,17 +424,17 @@ void GeneticClass::checksRepeatsInSet(){
 void GeneticClass::Interface(){
 	lc = 3000;                        
 
-	int algorithmIteration = 1;
+	int algorithmIteration = 10;
 	int score = 0, parent1, parent2;
 
 	DrawingPopulation();
 	Rating();
 	cout << "Rodzice: " << bestScoreInAll << endl;
 
-/*	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
+	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
 	for (int z = 0; z<algorithmIteration; z++){
-		int P = -1;		                            // licznik nowej populacji
-		while (P < lc - 2){
+		int P = -1;		                            //	licznik nowej populacji
+		while (false){								//	lc - 2){
 			parent1 = TournamentSelection(10);
 			do
 				parent2 = TournamentSelection(10);
@@ -445,18 +443,17 @@ void GeneticClass::Interface(){
 			P += 2;
 		}
 
-		int mutationIteration = P / 2;
+		int mutationIteration = 1;				//	P / 2;
 		for (int i = 0; i<mutationIteration; i++){
 			int target = TournamentSelection(10);
-			Mutation(chromosom[target]);//chromosom[target]);				//		przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children //
+			Mutation(chromosom[356]);			//	przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children 
 		}
 
-		//chromosom.swap(children);						//zakomentowany swap bo zakomentowane krzyzowanie // 	
+		//chromosom.swap(children);					//zakomentowany swap bo zakomentowane krzyzowanie
 		score = Rating();
 		cout << "Populacja_" << z << "  = " << score << endl;
 	}
-*/
-//	Mutation(path);
+
 	showBest();
 }
 
