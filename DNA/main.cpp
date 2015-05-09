@@ -8,24 +8,21 @@ using namespace std;
 
 int main()
 {
-//	new Generator();
-	
+	//	new Generator();
+
 	clock_t start, stop;
-	vector<string> data = Loader::readFromFile();
-	GraphClass::vertex = data.size();
-    Graph.create();
-	Graph.calculateWeight(data);
+	Loader::getFileNames();
 
-//	Graph.print();
-//	Loader::showTime(start, stop);
+	for (int i = 0; i < Loader::fileNames.size(); i++){
+		vector<string> data = Loader::readFromFile(Loader::fileNames[i]);
+		GraphClass::vertex = data.size();
+		Graph.create();
+		Graph.calculateWeight(data);
 
-//	Greedy greedy;
-//	greedy.start(0, 0);
-//	greedy.printResult();
-
-	GeneticClass Genetic;
-    Genetic.Interface();
-
+		GeneticClass Genetic;
+		Genetic.Interface();
+		//Loader::showTime(start, stop);
+	}
 	cin.get(); 
     return 0;
 }

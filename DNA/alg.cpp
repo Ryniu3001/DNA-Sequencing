@@ -1,109 +1,5 @@
 #include "alg.hpp"
 
-// DO USUNIÊCIA  
-void GeneticClass::checkOthers(){
-	for (int i = 0; i < lc; i++){
-		// tworzony wektor odzwiedzonych wypelniony false
-		vector <bool> visited(GraphClass::vertex);
-
-
-		// wypelnianie pierwszego wierzcholka w chromosomie losowo
-		chromosom[i][0] = rand() % GraphClass::vertex;
-		visited[chromosom[i][0]] = true;
-
-		// tworzenie danego chromosomu
-		for (int j = 1; j < GraphClass::vertex; j++)
-		{
-			bool found = false;
-			int siz = nastepniki[chromosom[i][j - 1]].size();				// liczba pasujacych nastepnikow
-			if (siz != 0)
-			{
-				int poprzednik = chromosom[i][j - 1];			// ? int poprzednik = chromosom.at(i).at(j - 1);
-				for (int pos = 0; pos < siz; pos++)
-				{
-					if ((j < GraphClass::vertex) && (!visited[nastepniki[poprzednik][pos][0]]))			//wybierz pierwszego nastepnika z listy i sprawdz czy byl juz odwiedzony
-					{
-						chromosom[i][j] = nastepniki[poprzednik][pos][0];
-						visited[chromosom[i][j]] = true;
-						found = true;
-						break;
-					}
-					else
-					{
-						int v = rand() % siz;
-						if ((!visited[nastepniki[poprzednik][v][0]]))
-						{
-							chromosom[i][j] = nastepniki[poprzednik][pos][0];
-							visited[chromosom[i][j]] = true;
-							found = true;
-							break;
-						}
-					}
-				}
-				if (!found)		//jeœli wszystkie na liscie nastepniko byly juz wczesniej odwiedzone dobierz losowo nieodwiedzony wierzcholek
-				{
-					//printf("Nie dopasowano nastepnika ?! %d %d %d \n", i, j, chromosom[i][j - 1]);
-					//chromosom[i][j] = rand() % GraphClass::vertex;
-					for (int l = 0; l < GraphClass::vertex; l++)
-					if (!visited[l])
-					{
-						visited[l] = true;
-						chromosom[i][j] = l;
-						break;
-					}
-				}
-			}
-			else		// jeœli brak pasuj¹cych nastêpników, bierz losowo
-			{
-				for (int l = 0; l < GraphClass::vertex; l++)
-				if (!visited[l])
-				{
-					visited[l] = true;
-					chromosom[i][j] = l;
-					break;
-				}
-				//printf("Wierzcholek %d nie ma nastepnikow !!??!!?? %d %d\n", chromosom[i][j - 1], i, j - 1);
-			}
-		}
-	}
-}
-void listaOdniesienia(){
-	/*
-	// lista odniesienia
-	list<int> listaOdn(GraphClass::vertex);
-	list<int>::iterator iter;
-	for (int i = 0; i < lc; i++)
-	{
-	listaOdn.clear();
-	for (int ii = 0; ii < GraphClass::vertex; ii++)
-	listaOdn.push_back(ii);
-
-	for (int j = 0; j < GraphClass::vertex; j++)
-	{
-	int result = 0;
-	int chrom = chromosom[i][j];
-	for (iter = listaOdn.begin(); iter != listaOdn.end(); iter++)
-	if (*iter == chrom)
-	break;
-	else
-	result++;
-
-	chromosom[i][j] = result;
-	listaOdn.erase(iter);
-	}
-	}
-
-
-
-	/*  for (int i=0;i<lc;i++){      // Wypisywanie chromosomow (zakodowanych)
-	cout << endl;
-	for (int j=0; j<GraphClass::vertex; j++)
-	cout << chromosom[i][j]<< " ";
-	}
-	cout << endl;
-	*/
-}
-
 list<int> GeneticClass::createList(vector<int> chromosome){
 	list<int> lista;
 	for (int i = 0; i<GraphClass::vertex; i++){
@@ -247,8 +143,8 @@ int GeneticClass::TournamentSelection(int x){
 	int best = (rand()*rand()) % lc;
 	int found;
 	for (int i = 0; i<x; i++){
-		found = (rand()*rand()) % lc;
-		if (ratings[found] < ratings[best])
+		found = rand() % lc;
+		if (ratings[found] > ratings[best])
 			best = found;
 	}
 	return best;
@@ -340,7 +236,6 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 */
 }
 // TODO: mutacja zamienia w vektorze 2 elementy czy ma mozliwosc dodania nowego wyrazu lub zamiany na nowy w konfiguracji
-// TODO: zamienia przy 2 równie dobrych nastêpnikach
 
 int GeneticClass::Rating()
 {
@@ -366,12 +261,12 @@ int GeneticClass::Rating()
 }
 
 void GeneticClass::showBest(){
-	cout << "\nGenetic best score: " << bestScoreInAll << endl << endl;
+	cout << endl << "Uzyskany najlepszy wynik: " << bestScoreInAll << endl;
 	printBest();
 }
 
 void GeneticClass::printBest(){
-	int dnaLength = 0;
+	int dnaLength = 10;
 	for (int i = 0; i<path.size(); i++){
 		if (i > 0)
 		{
@@ -384,7 +279,8 @@ void GeneticClass::printBest(){
 		}
 	}
 
-	cout << endl << "Dlugosc DNA: " << dnaLength+10 ;		//TODO: Tak samo jak przy generowaniu populacji cos z ta 10 trzeba zrobic.
+	cout << "Uzyskana dlugosc DNA: " << dnaLength << endl;
+	cout << "-------------------------------" << endl << endl;
 }
 
 
@@ -445,13 +341,13 @@ void GeneticClass::Interface(){
 
 		int mutationIteration = 1;				//	P / 2;
 		for (int i = 0; i<mutationIteration; i++){
-			int target = TournamentSelection(10);
-			Mutation(chromosom[356]);			//	przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children 
+			int target = TournamentSelection(1000);
+			Mutation(chromosom[target]);			//	przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children 
 		}
 
 		//chromosom.swap(children);					//zakomentowany swap bo zakomentowane krzyzowanie
 		score = Rating();
-		cout << "Populacja_" << z << "  = " << score << endl;
+		cout << "Populacja_" << z << " = " << score << endl;
 	}
 
 	showBest();

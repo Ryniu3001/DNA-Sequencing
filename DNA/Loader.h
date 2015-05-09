@@ -10,18 +10,23 @@
 
 using namespace std;
 
-class Loader
+static class Loader
 {
 
 public:
 	static int optimum;
-	static vector<string> readFromFile();
+	static vector<string> readFromFile(string fileName);
 	static void show();
 	static void showTime(clock_t start, clock_t stop);
+
+	static void getFileNames();
+	static vector<string> fileNames;
+
+	
 
 	Loader();
 	~Loader();
 private:
-	static string getFileName();
+
 };
 #endif
