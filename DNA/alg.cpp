@@ -123,15 +123,20 @@ void GeneticClass::createChromosom(int j, vector <bool> &visited, vector<int> &c
 {
 	while (j < GraphClass::vertex)
 	{
+		if (dnaLen > Loader::optimum)
+		{
+			chrom.resize(j - 1);
+			break;
+		}
 		int siz = nastepniki[chrom[j - 1]].size();				// liczba pasujacych nastepnikow
 		int poprzednik = chrom[j - 1];
-		if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (dnaLen < Loader::optimum) && (!random))
+		if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (!random))
 		{
 			chrom[j] = nastepniki[poprzednik][0][0];
 			dnaLen += nastepniki[poprzednik][0][1];
 			visited[chrom[j]] = true;
 		}
-		else if ((siz) && (dnaLen < Loader::optimum)) //Jesli najlepszy bedzie zajety to bierzemy nastepny nieodwiedzony z listy nastepnikow 
+		else if ((siz)) //Jesli najlepszy bedzie zajety to bierzemy nastepny nieodwiedzony z listy nastepnikow 
 		{
 			int pos;
 			for (pos = 0; pos < siz; pos++)
@@ -174,9 +179,9 @@ void GeneticClass::DrawingPopulation(){
 		unsigned int dnaLen = 10;											//TODO: zmienic 10 na jakas zmienna czy cos
 		int j = 1;
 
-		createChromosom(j, visited, chromosom[i], dnaLen, true);
+		createChromosom(j, visited, chromosom[i], dnaLen, true);			//losowo - true, deterministycznie - !(i < GraphClass::vertex)
 	}
-}	//TODO: przypadek dla 2 mozliwosci wyboru w przesuniêciu o 1
+}	
 
 int GeneticClass::TournamentSelection(int x){
 	int best = (rand()*rand()) % lc;
@@ -219,48 +224,57 @@ void GeneticClass::Crossover(int parent1, int parent2, vector<int> &child1, vect
 void GeneticClass::repair(vector <int> &chrom1, vector<int> &chrom2)
 {
 	vector <bool> visited(GraphClass::vertex, false);
-	int dnaLen = 10;											//TODO: zamienic na zmienna
+	int dnaLen = 10;						//TODO: zamienic na zmienna
+	bool cut = false;
 	for (int i = 1; i < chrom1.size(); i++)
 	{
+
 		if (visited[chrom1[i]])
 		{
+			cut = true;
 			for (int j = 0; j < nastepniki[chrom1[i - 1]].size(); j++)
 			{
+
 				if (!visited[nastepniki[chrom1[i - 1]][j][0]])
 				{
 					chrom1[i] = nastepniki[chrom1[i - 1]][j][0];
+					cut = false;
 					break;
 				}
 			}
 		}
 		dnaLen += GraphClass::matrix[chrom1[i - 1]][chrom1[i]];
 		visited[chrom1[i]] = true;
-		if (dnaLen >= Loader::optimum)				//TODO: Tu moze sie zatrzymac juz po przekroczeniu optimum. Nalezy poprawic !
+		if ((dnaLen > Loader::optimum) || (cut == true))
 		{
-			chrom1.resize(i);
+			chrom1.resize(i);					//TODO: Resize do i-1 czy i-2 ??
 			break;
 		}
 	}
+
 	dnaLen = 10;
 	fill(visited.begin(), visited.end(), false);
+	cut = false;
 	for (int i = 1; i < chrom2.size(); i++)
 	{
 		if (visited[chrom2[i]])
 		{
+			cut = true;
 			for (int j = 0; j < nastepniki[chrom2[i - 1]].size(); j++)
 			{
 				if (!visited[nastepniki[chrom2[i - 1]][j][0]])
 				{
 					chrom2[i] = nastepniki[chrom2[i - 1]][j][0];
+					cut = false;
 					break;
 				}
 			}
 		}
 		dnaLen += GraphClass::matrix[chrom2[i - 1]][chrom2[i]];
 		visited[chrom2[i]] = true;
-		if (dnaLen >= Loader::optimum)							//TODO: Tu moze sie zatrzymac juz po przekroczeniu optimum. Nalezy poprawic !
+		if (dnaLen > Loader::optimum || (cut == true))
 		{
-			chrom2.resize(i);
+			chrom2.resize(i - 1);				//TODO: Resize do i-1 czy i-2 ??
 			break;
 		}
 	}
@@ -299,8 +313,6 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 		chromosome.resize(GraphClass::vertex);
 		createChromosom(index + 1, visited, chromosome, dnaLen, false);
 	}
-
-
 }
 
 int GeneticClass::Rating()
@@ -405,16 +417,15 @@ void GeneticClass::Interface(){
 			Crossover(parent1, parent2, children[P+1], children[P+2]);
 			P += 2;
 		}
-		
 
 		chromosom.swap(children);						//zakomentowany swap bo zakomentowane krzyzowanie // 
-		
-		int mutationIteration = 1000;
+		/*
+		int mutationIteration = 3000;
 		for (int i = 0; i<mutationIteration; i++){
 			int target = TournamentSelection(10);
 			Mutation(chromosom[target]);//chromosom[target]);				//		przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children //
 		} 
-
+		*/
 	
 		score = Rating();
 		cout << "Populacja_" << z << "  = " << score << endl;
