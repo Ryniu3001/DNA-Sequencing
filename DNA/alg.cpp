@@ -86,15 +86,20 @@ void GeneticClass::createChromosom(int j, vector <bool> &visited, vector<int> &c
 {
 	while (j < GraphClass::vertex)
 	{
+		if (dnaLen > Loader::optimum)
+		{
+			chrom.resize(j-1);
+			break;
+		}
 		int siz = nastepniki[chrom[j - 1]].size();				// liczba pasujacych nastepnikow
 		int poprzednik = chrom[j - 1];
-		if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (dnaLen < Loader::optimum) && (!random))
+		if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (!random))
 		{
 			chrom[j] = nastepniki[poprzednik][0][0];
 			dnaLen += nastepniki[poprzednik][0][1];
 			visited[chrom[j]] = true;
 		}
-		else if ((siz) && (dnaLen < Loader::optimum)) //Jesli najlepszy bedzie zajety to bierzemy nastepny nieodwiedzony z listy nastepnikow 
+		else if ((siz)) //Jesli najlepszy bedzie zajety to bierzemy nastepny nieodwiedzony z listy nastepnikow 
 		{
 			int pos;
 			for (pos = 0; pos < siz; pos++)
@@ -324,7 +329,7 @@ void GeneticClass::checksRepeatsInSet(){
 void GeneticClass::Interface(){
 	lc = 3000;                        
 
-	int algorithmIteration = 10;
+	int algorithmIteration = 30;
 	int score = 0, parent1, parent2;
 
 	DrawingPopulation();
@@ -333,7 +338,7 @@ void GeneticClass::Interface(){
 
 	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
 	for (int z = 0; z<algorithmIteration; z++){
-		int P = -1;		                            //	licznik nowej populacji
+/*		int P = -1;		                            //	licznik nowej populacji
 		while (false){								//	lc - 2){
 			parent1 = TournamentSelection(10);
 			do
@@ -342,8 +347,8 @@ void GeneticClass::Interface(){
 			Crossover(parent1, parent2, children[P+1], children[P+2]);
 			P += 2;
 		}
-
-		int mutationIteration = 1;				//	P / 2;
+		*/
+		int mutationIteration = 20;				//	P / 2;
 		for (int i = 0; i<mutationIteration; i++){
 			int target = TournamentSelection(1000);
 			Mutation(chromosom[target]);			//	przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children 
