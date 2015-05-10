@@ -7,8 +7,6 @@ int Saver::count = 0;
 void Saver::write(){
 	stop = clock();
 	time = (stop - start) / (double)(CLOCKS_PER_SEC / 1000);
-	result = 0;
-	dnaLength = 0;
 	count++;
 	
 	saveToFile();

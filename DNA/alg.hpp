@@ -2,6 +2,7 @@
 #define alg_hpp
 
 #include "Loader.h" //Do testow
+#include "Saver.h"
 #include "graf.hpp"
 #include <iostream>
 #include <ctime>
@@ -35,7 +36,7 @@ private:
 	void Mutation(vector<int> &chomosome);
 	int TournamentSelection(int x);		//x - liczba chromosow w turnieju
 	void showBest();
-	void printBest();
+	int printBest();
 
 	void checksRepeatsInChromosom();
 	void checksRepeatsInSet();

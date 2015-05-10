@@ -261,11 +261,17 @@ int GeneticClass::Rating()
 }
 
 void GeneticClass::showBest(){
+	int dnaLength = printBest();
+
 	cout << endl << "Uzyskany najlepszy wynik: " << bestScoreInAll << endl;
-	printBest();
+	cout << "Uzyskana dlugosc DNA: " << dnaLength << endl;
+	cout << "-------------------------------" << endl << endl;
+
+	Saver::dnaLength = dnaLength;
+	Saver::result = bestScoreInAll;
 }
 
-void GeneticClass::printBest(){
+int GeneticClass::printBest(){
 	int dnaLength = 10;
 	for (int i = 0; i<path.size(); i++){
 		if (i > 0)
@@ -278,9 +284,7 @@ void GeneticClass::printBest(){
 		//	cout << path[i];
 		}
 	}
-
-	cout << "Uzyskana dlugosc DNA: " << dnaLength << endl;
-	cout << "-------------------------------" << endl << endl;
+	return dnaLength;
 }
 
 
