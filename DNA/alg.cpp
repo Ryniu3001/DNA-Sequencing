@@ -213,14 +213,14 @@ void GeneticClass::Crossover(int parent1, int parent2, vector<int> &child1, vect
 
 	child1.resize(cutpoint1 + chromosom[parent2].size() - cutpoint2);
 	child2.resize(cutpoint2 + chromosom[parent1].size() - cutpoint1);
-	//repair(child1, child2);
+	repair(child1, child2);
 }	
 
-void GeneticClass::repair(vector <int> chrom1, vector<int> &chrom2)
+void GeneticClass::repair(vector <int> &chrom1, vector<int> &chrom2)
 {
 	vector <bool> visited(GraphClass::vertex, false);
-	int sizz = chrom1.size();
-	for (int i = 0; i < chrom1.size(); i++)
+	int dnaLen = 10;											//TODO: zamienic na zmienna
+	for (int i = 1; i < chrom1.size(); i++)
 	{
 		if (visited[chrom1[i]])
 		{
@@ -233,11 +233,17 @@ void GeneticClass::repair(vector <int> chrom1, vector<int> &chrom2)
 				}
 			}
 		}
+		dnaLen += GraphClass::matrix[chrom1[i - 1]][chrom1[i]];
 		visited[chrom1[i]] = true;
+		if (dnaLen >= Loader::optimum)				//TODO: Tu moze sie zatrzymac juz po przekroczeniu optimum. Nalezy poprawic !
+		{
+			chrom1.resize(i);
+			break;
+		}
 	}
-
+	dnaLen = 10;
 	fill(visited.begin(), visited.end(), false);
-	for (int i = 0; i < chrom2.size(); i++)
+	for (int i = 1; i < chrom2.size(); i++)
 	{
 		if (visited[chrom2[i]])
 		{
@@ -250,7 +256,13 @@ void GeneticClass::repair(vector <int> chrom1, vector<int> &chrom2)
 				}
 			}
 		}
+		dnaLen += GraphClass::matrix[chrom2[i - 1]][chrom2[i]];
 		visited[chrom2[i]] = true;
+		if (dnaLen >= Loader::optimum)							//TODO: Tu moze sie zatrzymac juz po przekroczeniu optimum. Nalezy poprawic !
+		{
+			chrom2.resize(i);
+			break;
+		}
 	}
 }
 
@@ -372,9 +384,9 @@ void GeneticClass::checksRepeatsInSet(){
 
 ///////////////////////////////  INTERFACE  ////////////////////////////////
 void GeneticClass::Interface(){
-	lc = 10000;                        
+	lc = 5000;                        
 
-	int algorithmIteration = 50;
+	int algorithmIteration = 20;
 	int score = 0, parent1, parent2;
 
 	DrawingPopulation();
@@ -396,12 +408,12 @@ void GeneticClass::Interface(){
 		
 
 		chromosom.swap(children);						//zakomentowany swap bo zakomentowane krzyzowanie // 
-		/*
+		
 		int mutationIteration = 1000;
 		for (int i = 0; i<mutationIteration; i++){
 			int target = TournamentSelection(10);
 			Mutation(chromosom[target]);//chromosom[target]);				//		przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children //
-		} */
+		} 
 
 	
 		score = Rating();
