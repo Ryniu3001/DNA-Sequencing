@@ -1,72 +1,5 @@
 #include "alg.hpp"
 
-// DO USUNIÊCIA
-void GeneticClass::checkOthers(){
-	for (int i = 0; i < lc; i++){
-		// tworzony wektor odzwiedzonych wypelniony false
-		vector <bool> visited(GraphClass::vertex);
-
-
-		// wypelnianie pierwszego wierzcholka w chromosomie losowo
-		chromosom[i][0] = rand() % GraphClass::vertex;
-		visited[chromosom[i][0]] = true;
-
-		// tworzenie danego chromosomu
-		for (int j = 1; j < GraphClass::vertex; j++)
-		{
-			bool found = false;
-			int siz = nastepniki[chromosom[i][j - 1]].size();				// liczba pasujacych nastepnikow
-			if (siz != 0)
-			{
-				int poprzednik = chromosom[i][j - 1];			// ? int poprzednik = chromosom.at(i).at(j - 1);
-				for (int pos = 0; pos < siz; pos++)
-				{
-					if ((j < GraphClass::vertex) && (!visited[nastepniki[poprzednik][pos][0]]))			//wybierz pierwszego nastepnika z listy i sprawdz czy byl juz odwiedzony
-					{
-						chromosom[i][j] = nastepniki[poprzednik][pos][0];
-						visited[chromosom[i][j]] = true;
-						found = true;
-						break;
-					}
-					else
-					{
-						int v = rand() % siz;
-						if ((!visited[nastepniki[poprzednik][v][0]]))
-						{
-							chromosom[i][j] = nastepniki[poprzednik][pos][0];
-							visited[chromosom[i][j]] = true;
-							found = true;
-							break;
-						}
-					}
-				}
-				if (!found)		//jeœli wszystkie na liscie nastepniko byly juz wczesniej odwiedzone dobierz losowo nieodwiedzony wierzcholek
-				{
-					//printf("Nie dopasowano nastepnika ?! %d %d %d \n", i, j, chromosom[i][j - 1]);
-					//chromosom[i][j] = rand() % GraphClass::vertex;
-					for (int l = 0; l < GraphClass::vertex; l++)
-					if (!visited[l])
-					{
-						visited[l] = true;
-						chromosom[i][j] = l;
-						break;
-					}
-				}
-			}
-			else		// jeœli brak pasuj¹cych nastêpników, bierz losowo
-			{
-				for (int l = 0; l < GraphClass::vertex; l++)
-				if (!visited[l])
-				{
-					visited[l] = true;
-					chromosom[i][j] = l;
-					break;
-				}
-				//printf("Wierzcholek %d nie ma nastepnikow !!??!!?? %d %d\n", chromosom[i][j - 1], i, j - 1);
-			}
-		}
-	}
-}
 void listaOdniesienia(){
 	/*
 	// lista odniesienia
@@ -250,27 +183,76 @@ int GeneticClass::TournamentSelection(int x){
 	int found;
 	for (int i = 0; i<x; i++){
 		found = (rand()*rand()) % lc;
-		if (ratings[found] < ratings[best])
+		if (ratings[found] > ratings[best])
 			best = found;
 	}
 	return best;
 }
 
 void GeneticClass::Crossover(int parent1, int parent2, vector<int> &child1, vector<int> &child2){
+	int child1Size, child2Size, cutpoint1, cutpoint2;
+	int parsiz1 = chromosom[parent1].size();
+	int parsiz2 = chromosom[parent2].size();
+	do
+	{
+		cutpoint1 = rand() % chromosom[parent1].size();
+		cutpoint2 = rand() % chromosom[parent2].size();
 
+		child1Size = cutpoint1 + chromosom[parent2].size() - cutpoint2;
+		child2Size = cutpoint2 + chromosom[parent1].size() - cutpoint1;
+	} while ((child2Size > GraphClass::vertex) || (child1Size > GraphClass::vertex));
 
+	child1.resize(GraphClass::vertex);
+	child2.resize(GraphClass::vertex);
 
-	for (int i = 0; i <= (GraphClass::vertex / 2); i++){
-		child1[i] = chromosom[parent1][i];
-		child2[i] = chromosom[parent2][i];
-	}
+	copy(chromosom[parent1].begin(), chromosom[parent1].begin() + cutpoint1, child1.begin());
+	copy(chromosom[parent2].begin() + cutpoint2, chromosom[parent2].end(), child1.begin() + cutpoint1);
 
-	for (int i = (GraphClass::vertex / 2) + 1; i<GraphClass::vertex; i++){
-		child1[i] = chromosom[parent2][i];
-		child2[i] = chromosom[parent1][i];
-	}
+	copy(chromosom[parent2].begin(), chromosom[parent2].begin() + cutpoint2, child2.begin());
+	copy(chromosom[parent1].begin() + cutpoint1, chromosom[parent1].end(), child2.begin() + cutpoint2);	
+
+	child1.resize(cutpoint1 + chromosom[parent2].size() - cutpoint2);
+	child2.resize(cutpoint2 + chromosom[parent1].size() - cutpoint1);
+	//repair(child1, child2);
 }	
-//	TODO: krzy¿owanie przy przesuniêciu powy¿ej 1
+
+void GeneticClass::repair(vector <int> chrom1, vector<int> &chrom2)
+{
+	vector <bool> visited(GraphClass::vertex, false);
+	int sizz = chrom1.size();
+	for (int i = 0; i < chrom1.size(); i++)
+	{
+		if (visited[chrom1[i]])
+		{
+			for (int j = 0; j < nastepniki[chrom1[i - 1]].size(); j++)
+			{
+				if (!visited[nastepniki[chrom1[i - 1]][j][0]])
+				{
+					chrom1[i] = nastepniki[chrom1[i - 1]][j][0];
+					break;
+				}
+			}
+		}
+		visited[chrom1[i]] = true;
+	}
+
+	fill(visited.begin(), visited.end(), false);
+	for (int i = 0; i < chrom2.size(); i++)
+	{
+		if (visited[chrom2[i]])
+		{
+			for (int j = 0; j < nastepniki[chrom2[i - 1]].size(); j++)
+			{
+				if (!visited[nastepniki[chrom2[i - 1]][j][0]])
+				{
+					chrom2[i] = nastepniki[chrom2[i - 1]][j][0];
+					break;
+				}
+			}
+		}
+		visited[chrom2[i]] = true;
+	}
+}
 
 int getWorst(vector<int> chromosome){
 	int worst = 0, score = -1;
@@ -390,7 +372,7 @@ void GeneticClass::checksRepeatsInSet(){
 
 ///////////////////////////////  INTERFACE  ////////////////////////////////
 void GeneticClass::Interface(){
-	lc = 50000;                        
+	lc = 10000;                        
 
 	int algorithmIteration = 50;
 	int score = 0, parent1, parent2;
@@ -402,7 +384,7 @@ void GeneticClass::Interface(){
 	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
 	for (int z = 0; z<algorithmIteration; z++){
 		int P = -1;		                            // licznik nowej populacji
-		/*
+		
 		while (P < lc - 2){
 			parent1 = TournamentSelection(10);
 			do
@@ -411,14 +393,17 @@ void GeneticClass::Interface(){
 			Crossover(parent1, parent2, children[P+1], children[P+2]);
 			P += 2;
 		}
-		*/
+		
+
+		chromosom.swap(children);						//zakomentowany swap bo zakomentowane krzyzowanie // 
+		/*
 		int mutationIteration = 1000;
 		for (int i = 0; i<mutationIteration; i++){
 			int target = TournamentSelection(10);
 			Mutation(chromosom[target]);//chromosom[target]);				//		przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children //
-		}
+		} */
 
-		//chromosom.swap(children);						//zakomentowany swap bo zakomentowane krzyzowanie // 	
+	
 		score = Rating();
 		cout << "Populacja_" << z << "  = " << score << endl;
 	}
