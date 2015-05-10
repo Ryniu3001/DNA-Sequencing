@@ -60,7 +60,3 @@ void Loader::getFileNames(){
 		perror("Nie mo¿na otworzyæ folderu");
 	}
 }
-
- void Loader::showTime(clock_t start, clock_t stop){
-	 cout << "Czas: " << (stop - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl << endl;
- }

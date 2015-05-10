@@ -33,6 +33,9 @@
     <ClCompile Include="Generator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Saver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="alg.hpp">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Generator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Saver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

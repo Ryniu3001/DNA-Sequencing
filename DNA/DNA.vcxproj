@@ -17,6 +17,7 @@
     <ClCompile Include="Greedy.cpp" />
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Saver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="alg.hpp" />
@@ -24,6 +25,7 @@
     <ClInclude Include="graf.hpp" />
     <ClInclude Include="Greedy.h" />
     <ClInclude Include="Loader.h" />
+    <ClInclude Include="Saver.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{EEAE080D-CF3E-43EE-9410-2F0ADBE4FCED}</ProjectGuid>

@@ -1,11 +1,11 @@
 #ifndef GREEDY_H
 #define GREEDY_H
 #include <iostream>
-using namespace std;
 #include <vector>
 #include <Climits>
 #include "graf.hpp"
 
+using namespace std;
 
 class Greedy
 {
