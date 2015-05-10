@@ -419,13 +419,13 @@ void GeneticClass::Interface(){
 		}
 
 		chromosom.swap(children);						//zakomentowany swap bo zakomentowane krzyzowanie // 
-		/*
-		int mutationIteration = 3000;
+		
+		int mutationIteration = P / 6;
 		for (int i = 0; i<mutationIteration; i++){
 			int target = TournamentSelection(10);
 			Mutation(chromosom[target]);//chromosom[target]);				//		przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children //
 		} 
-		*/
+		
 	
 		score = Rating();
 		cout << "Populacja_" << z << "  = " << score << endl;
