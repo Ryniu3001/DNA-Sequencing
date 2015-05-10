@@ -169,7 +169,7 @@ void GeneticClass::DrawingPopulation(){
 	srand(time(NULL));
 	initializeVectors();
 	generateNastepniki();
-		
+	#pragma omp parallel for	
 	for (int i = 0; i < lc; i++){
 		vector <bool> visited(GraphClass::vertex);
 		for (int g = 0; g<visited.size(); g++)
@@ -313,6 +313,10 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 		chromosome.resize(GraphClass::vertex);
 		createChromosom(index + 1, visited, chromosome, dnaLen, false);
 	}
+	if ((index != length - 1) && (nastepniki[checkVertex][1][1] == nastepniki[checkVertex][0][1]))
+	{
+		printf("MAM DWA NAJLEPSZE NASTEPNIKI ! \n");
+	}
 }
 
 int GeneticClass::Rating()
@@ -398,7 +402,7 @@ void GeneticClass::checksRepeatsInSet(){
 void GeneticClass::Interface(){
 	lc = 5000;                        
 
-	int algorithmIteration = 20;
+	int algorithmIteration = 30;
 	int score = 0, parent1, parent2;
 
 	DrawingPopulation();
@@ -409,18 +413,19 @@ void GeneticClass::Interface(){
 	for (int z = 0; z<algorithmIteration; z++){
 		int P = -1;		                            // licznik nowej populacji
 		
-		while (P < lc - 2){
+		#pragma omp parallel for
+		for(P = -1; P < lc - 2; P += 2)
+		{
 			parent1 = TournamentSelection(10);
 			do
 				parent2 = TournamentSelection(10);
 			while (parent1 == parent2);
-			Crossover(parent1, parent2, children[P+1], children[P+2]);
-			P += 2;
+			Crossover(parent1, parent2, children[P + 1], children[P + 2]);
 		}
 
 		chromosom.swap(children);						//zakomentowany swap bo zakomentowane krzyzowanie // 
 		
-		int mutationIteration = P / 6;
+		int mutationIteration = P / 4;
 		for (int i = 0; i<mutationIteration; i++){
 			int target = TournamentSelection(10);
 			Mutation(chromosom[target]);//chromosom[target]);				//		przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children //
