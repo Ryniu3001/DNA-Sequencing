@@ -41,6 +41,7 @@ bool rosnaco(vector<int> const a, vector<int> const b)
 void GeneticClass::initializeVectors(){
 	bestScoreInAll = 0;
 
+	nastepniki.clear();
 	path.clear();
 	ratings.clear();
 	chromosom.clear();

@@ -8,6 +8,8 @@ vector<vector<int>> GraphClass::matrix = initializer_list<vector<int>>();
 
 GraphClass Graph;
 void GraphClass::create(){
+	matrix.clear();
+
 	for (int i = 0; i < vertex; i++){
 		vector<int> row;
 		for (int j = 0; j < vertex; j++)
