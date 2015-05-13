@@ -89,7 +89,7 @@ void GeneticClass::createChromosom(int j, vector <bool> &visited, vector<int> &c
 	{
 		if (dnaLen > Loader::optimum)
 		{
-			chrom.resize(j-1);
+			chrom.resize(j - 1);
 			break;
 		}
 		int siz = nastepniki[chrom[j - 1]].size();				// liczba pasujacych nastepnikow
@@ -133,23 +133,23 @@ void GeneticClass::DrawingPopulation(){
 	srand(time(NULL));
 	initializeVectors();
 	generateNastepniki();
-		
+	#pragma omp parallel for	
 	for (int i = 0; i < lc; i++){
-		vector <bool> visited(GraphClass::vertex);											
+		vector <bool> visited(GraphClass::vertex,false);
 		chromosom[i][0] = i % GraphClass::vertex;							//poczatkowy wierzcholek
 		visited[chromosom[i][0]] = true;
 		unsigned int dnaLen = 10;											//TODO: zmienic 10 na jakas zmienna czy cos
 		int j = 1;
 
-		createChromosom(j, visited, chromosom[i], dnaLen, !(i < GraphClass::vertex));
+		createChromosom(j, visited, chromosom[i], dnaLen, !(i<10));			//losowo - true, deterministycznie - !(i < GraphClass::vertex)
 	}
-}	//TODO: przypadek dla 2 mozliwosci wyboru w przesuniêciu o 1
+}	
 
 int GeneticClass::TournamentSelection(int x){
 	int best = (rand()*rand()) % lc;
 	int found;
 	for (int i = 0; i<x; i++){
-		found = rand() % lc;
+		found = (rand()*rand()) % lc;
 		if (ratings[found] > ratings[best])
 			best = found;
 	}
@@ -157,20 +157,90 @@ int GeneticClass::TournamentSelection(int x){
 }
 
 void GeneticClass::Crossover(int parent1, int parent2, vector<int> &child1, vector<int> &child2){
+	int child1Size, child2Size, cutpoint1, cutpoint2;
+	int parsiz1 = chromosom[parent1].size();
+	int parsiz2 = chromosom[parent2].size();
+	do
+	{
+		cutpoint1 = rand() % chromosom[parent1].size();
+		cutpoint2 = rand() % chromosom[parent2].size();
 
+		child1Size = cutpoint1 + chromosom[parent2].size() - cutpoint2;
+		child2Size = cutpoint2 + chromosom[parent1].size() - cutpoint1;
+	} while ((child2Size > GraphClass::vertex) || (child1Size > GraphClass::vertex));
 
+	child1.resize(GraphClass::vertex);
+	child2.resize(GraphClass::vertex);
 
-	for (int i = 0; i <= (GraphClass::vertex / 2); i++){
-		child1[i] = chromosom[parent1][i];
-		child2[i] = chromosom[parent2][i];
+	copy(chromosom[parent1].begin(), chromosom[parent1].begin() + cutpoint1, child1.begin());
+	copy(chromosom[parent2].begin() + cutpoint2, chromosom[parent2].end(), child1.begin() + cutpoint1);
+
+	copy(chromosom[parent2].begin(), chromosom[parent2].begin() + cutpoint2, child2.begin());
+	copy(chromosom[parent1].begin() + cutpoint1, chromosom[parent1].end(), child2.begin() + cutpoint2);	
+
+	child1.resize(cutpoint1 + chromosom[parent2].size() - cutpoint2);
+	child2.resize(cutpoint2 + chromosom[parent1].size() - cutpoint1);
+	repair(child1, child2);
+}	
+
+void GeneticClass::repair(vector <int> &chrom1, vector<int> &chrom2)
+{
+	vector <bool> visited(GraphClass::vertex, false);
+	int dnaLen = 10;						//TODO: zamienic na zmienna
+	bool cut = false;
+	for (int i = 1; i < chrom1.size(); i++)
+	{
+
+		if (visited[chrom1[i]])
+		{
+			cut = true;
+			for (int j = 0; j < nastepniki[chrom1[i - 1]].size(); j++)
+			{
+
+				if (!visited[nastepniki[chrom1[i - 1]][j][0]])
+				{
+					chrom1[i] = nastepniki[chrom1[i - 1]][j][0];
+					cut = false;
+					break;
+				}
+			}
+		}
+		dnaLen += GraphClass::matrix[chrom1[i - 1]][chrom1[i]];
+		visited[chrom1[i]] = true;
+		if ((dnaLen > Loader::optimum) || (cut == true))
+		{
+			chrom1.resize(i);					//TODO: Resize do i-1 czy i-2 ??
+			break;
+		}
 	}
 
-	for (int i = (GraphClass::vertex / 2) + 1; i<GraphClass::vertex; i++){
-		child1[i] = chromosom[parent2][i];
-		child2[i] = chromosom[parent1][i];
+	dnaLen = 10;
+	fill(visited.begin(), visited.end(), false);
+	cut = false;
+	for (int i = 1; i < chrom2.size(); i++)
+	{
+		if (visited[chrom2[i]])
+		{
+			cut = true;
+			for (int j = 0; j < nastepniki[chrom2[i - 1]].size(); j++)
+			{
+				if (!visited[nastepniki[chrom2[i - 1]][j][0]])
+				{
+					chrom2[i] = nastepniki[chrom2[i - 1]][j][0];
+					cut = false;
+					break;
+				}
+			}
+		}
+		dnaLen += GraphClass::matrix[chrom2[i - 1]][chrom2[i]];
+		visited[chrom2[i]] = true;
+		if (dnaLen > Loader::optimum || (cut == true))
+		{
+			chrom2.resize(i - 1);				//TODO: Resize do i-1 czy i-2 ??
+			break;
+		}
 	}
 }	
-//	TODO: krzy¿owanie przy przesuniêciu powy¿ej 1
 
 int getWorst(vector<int> chromosome){
 	int worst = 0, score = -1;
@@ -184,6 +254,8 @@ int getWorst(vector<int> chromosome){
 	return worst;
 }
 
+//Poprzednia mutacja
+/*
 void GeneticClass::Mutation(vector<int> &chromosome){
 
 
@@ -192,12 +264,12 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 	int node = -1;
 	for (int i = 0; i < (chromosome.size() - 1); i++){
 		int current = chromosome[i];
-		int next = chromosome[i + 1]; 
+		int next = chromosome[i + 1];
 		int size = nastepniki[current].size() - 1;
 
 		for (int j = 0; j < size; j++){
 			if (nastepniki[current][j][0] == next){
-				if (nastepniki[current][j][1] == nastepniki[current][j+1][1]){
+				if (nastepniki[current][j][1] == nastepniki[current][j + 1][1]){
 					node = nastepniki[current][j + 1][0];
 					break;
 				}
@@ -205,7 +277,7 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 		}
 
 		if (node > 0){
-			index1 = i+1;
+			index1 = i + 1;
 			for (int j = 0; j < chromosome.size(); j++){
 				if (chromosome[j] == node){
 					index2 = j;
@@ -219,9 +291,9 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 	if (index1 >= 0){
 		if (index2 > 0)
 			chromosome[index1] = chromosome[index2];
-		else 
+		else
 			chromosome[index1] = node;
-	
+
 
 		vector<bool> visited(GraphClass::vertex);
 		int rate = 10;
@@ -233,15 +305,42 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 			visited[next] = true;
 		}
 		chromosome.resize(GraphClass::vertex);
-		createChromosom(index1+1, visited, chromosome, rate, false);
+		createChromosom(index1 + 1, visited, chromosome, rate, false);
 	}
 
-/*	for (int i = 0; i < chromosome.size(); i++)
-		cout << chromosome[i] << "  ";
-	cout << endl; 
-*/
+	//	for (int i = 0; i < chromosome.size(); i++)
+	//cout << chromosome[i] << "  ";
+	//cout << endl;
+	
 }
-// TODO: mutacja zamienia w vektorze 2 elementy czy ma mozliwosc dodania nowego wyrazu lub zamiany na nowy w konfiguracji
+*/
+
+void GeneticClass::Mutation(vector<int> &chromosome){
+	srand(time(NULL));
+	int length = chromosome.size();
+	int index = rand() % length;
+	int checkVertex = chromosome[index];
+	int successorsAmount = nastepniki[checkVertex].size();
+
+	if ((index != length-1) && (GraphClass::matrix[checkVertex][chromosome[index + 1]] != nastepniki[checkVertex][0][1])) 
+		// Jezeli wylosowany wierzcholek nie jest ostatni i jego nastepnik w chromosomie nie jest najlepszy to buduj od tego miejsca
+	{
+		vector<bool> visited(GraphClass::vertex, false);
+		unsigned int dnaLen = 10;												//TODO: Zamienic 10 na jakies pole w klasie uzupelniane przy wczytywaniu pliku
+		for (int i = 0; i < index; i++)
+		{
+			visited[chromosome[i]] = true;
+			dnaLen += GraphClass::matrix[chromosome[i]][chromosome[i + 1]];
+	}
+		visited[index] = true;
+		chromosome.resize(GraphClass::vertex);
+		createChromosom(index + 1, visited, chromosome, dnaLen, false);
+	}
+	if ((index != length - 1) && (nastepniki[checkVertex][1][1] == nastepniki[checkVertex][0][1]))
+	{
+		printf("MAM DWA NAJLEPSZE NASTEPNIKI ! \n");
+	}
+}
 
 int GeneticClass::Rating()
 {
@@ -328,7 +427,7 @@ void GeneticClass::checksRepeatsInSet(){
 
 ///////////////////////////////  INTERFACE  ////////////////////////////////
 void GeneticClass::Interface(){
-	lc = 3000;                        
+	lc =1000;                        
 
 	int algorithmIteration = 30;
 	int score = 0, parent1, parent2;
@@ -339,27 +438,32 @@ void GeneticClass::Interface(){
 
 	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
 	for (int z = 0; z<algorithmIteration; z++){
-/*		int P = -1;		                            //	licznik nowej populacji
-		while (false){								//	lc - 2){
+		int P = -1;		                            // licznik nowej populacji
+		
+		#pragma omp parallel for
+		for(P = -1; P < lc - 2; P += 2)
+		{
 			parent1 = TournamentSelection(10);
 			do
 				parent2 = TournamentSelection(10);
 			while (parent1 == parent2);
-			Crossover(parent1, parent2, children[P+1], children[P+2]);
-			P += 2;
+			Crossover(parent1, parent2, children[P + 1], children[P + 2]);
 		}
-		*/
-		int mutationIteration = 20;				//	P / 2;
+
+		chromosom.swap(children);						//zakomentowany swap bo zakomentowane krzyzowanie // 
+		
+		int mutationIteration = 50;
 		for (int i = 0; i<mutationIteration; i++){
 			int target = TournamentSelection(1000);
 			Mutation(chromosom[target]);			//	przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children 
 		}
 
-		//chromosom.swap(children);					//zakomentowany swap bo zakomentowane krzyzowanie
+	
 		score = Rating();
 		cout << "Populacja_" << z << " = " << score << endl;
 	}
 
+//	Mutation(path);
 	showBest();
 }
 

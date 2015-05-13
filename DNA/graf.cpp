@@ -19,6 +19,7 @@ void GraphClass::create(){
 };
 
 void GraphClass::calculateWeight(const vector<string> &data){
+	#pragma omp parallel for
 	for (int i = 0; i < data.size(); i++)
 		for (int j = 0; j < data.size(); j++)
 			if (i != j)

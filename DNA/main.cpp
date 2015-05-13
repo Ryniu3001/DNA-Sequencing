@@ -9,7 +9,7 @@ using namespace std;
 
 int main()
 {
-	//	new Generator();
+		//new Generator();
 
 	Loader::getFileNames();
 
