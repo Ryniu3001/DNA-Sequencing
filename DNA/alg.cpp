@@ -136,7 +136,8 @@ void GeneticClass::DrawingPopulation(){
 	#pragma omp parallel for	
 	for (int i = 0; i < lc; i++){
 		vector <bool> visited(GraphClass::vertex,false);
-		chromosom[i][0] = i % GraphClass::vertex;							//poczatkowy wierzcholek
+		do chromosom[i][0] = i % GraphClass::vertex;							//poczatkowy wierzcholek
+		while (nastepniki[chromosom[i][0]].size() == 0);
 		visited[chromosom[i][0]] = true;
 		unsigned int dnaLen = 10;											//TODO: zmienic 10 na jakas zmienna czy cos
 		int j = 1;
@@ -444,22 +445,26 @@ void GeneticClass::checksRepeatsInChromosom(){
 }
 
 void GeneticClass::checksRepeatsInSet(){
-	cout << "SPRAWDZAMY POWTORZENIA IN SET ... ";
+//	cout << "SPRAWDZAMY POWTORZENIA IN SET ... ";
 	for (int i = 0; i < lc; i++){
 		vector<bool> visited(GraphClass::vertex);
-		for (int j = 0; j < GraphClass::vertex; j++){
+		for (int j = 0; j < chromosom[i].size(); j++){
 			if (!visited[chromosom[i][j]])
 				visited[chromosom[i][j]] = true;
-			else
-				cout << endl << "W CHROMOSOMIE " << i << " POWTORZENIA" << endl;
+			else{
+				for (int k = 0; k < chromosom[i].size(); k++)
+					if (chromosom[i][j] == chromosom[i][k])
+						break;
+				cout << endl << "W CHROMOSOMIE " << i << " S¥ POWTORZENIA" << endl;
+			}
 		}
 	}
-	cout << "KONIEC" << endl << endl;
+//	cout << "KONIEC" << endl << endl;
 }
 
 ///////////////////////////////  INTERFACE  ////////////////////////////////
 void GeneticClass::Interface(){
-	lc =1000;                        
+	lc = 1000;                        
 
 	int algorithmIteration = 30;
 	int score = 0, parent1, parent2;
@@ -467,6 +472,7 @@ void GeneticClass::Interface(){
 	DrawingPopulation();
 	Rating();
 	cout << "Rodzice: " << bestScoreInAll << endl;
+	checksRepeatsInSet();
 
 	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
 	for (int z = 0; z<algorithmIteration; z++){
@@ -489,7 +495,7 @@ void GeneticClass::Interface(){
 			int target = TournamentSelection(1000);
 			Mutation(chromosom[target]);			//	przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children 
 		}
-
+		checksRepeatsInSet();
 	
 		score = Rating();
 		cout << "Populacja_" << z << " = " << score << endl;
