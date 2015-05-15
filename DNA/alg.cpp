@@ -318,12 +318,14 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 void GeneticClass::Mutation(vector<int> &chromosome){
 	srand(time(NULL));
 	int length = chromosome.size();
-	int index = rand() % length;
+	int index = rand() % (length-1);
 	int checkVertex = chromosome[index];
 	int successorsAmount = nastepniki[checkVertex].size();
 
-	if ((index != length-1) && (GraphClass::matrix[checkVertex][chromosome[index + 1]] != nastepniki[checkVertex][0][1])) 
-		// Jezeli wylosowany wierzcholek nie jest ostatni i jego nastepnik w chromosomie nie jest najlepszy to buduj od tego miejsca
+	bool wasChange = false;
+
+	if (GraphClass::matrix[checkVertex][chromosome[index + 1]] != nastepniki[checkVertex][0][1]) 
+		// Jezeli dla wylosowanego wierzcholka, nastepnik w chromosomie nie jest najlepszy to buduj od tego miejsca //TODO: mog¹ byæ powtórzenia !!!!!!!!!!!!!!!
 	{
 		vector<bool> visited(GraphClass::vertex, false);
 		unsigned int dnaLen = 10;												//TODO: Zamienic 10 na jakies pole w klasie uzupelniane przy wczytywaniu pliku
@@ -331,14 +333,41 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 		{
 			visited[chromosome[i]] = true;
 			dnaLen += GraphClass::matrix[chromosome[i]][chromosome[i + 1]];
-	}
+		}
 		visited[index] = true;
 		chromosome.resize(GraphClass::vertex);
 		createChromosom(index + 1, visited, chromosome, dnaLen, false);
+		wasChange = true;
 	}
-	if ((index != length - 1) && (nastepniki[checkVertex][1][1] == nastepniki[checkVertex][0][1]))
+
+	if (!wasChange && (nastepniki[checkVertex][0][1] == nastepniki[checkVertex][1][1]))
+		// jezeli ma 2 najlepsze nastepniki i nie bylo zmiany
 	{
-		printf("MAM DWA NAJLEPSZE NASTEPNIKI ! \n");
+		int index2 = -1;
+		int toChange = nastepniki[checkVertex][1][0];
+
+		for (int j = 0; j < chromosome.size(); j++){
+			if (chromosome[j] == toChange){
+				index2 = j;
+				break;
+			}
+		}
+
+		if (index2 > 0)
+			chromosome[index+1] = chromosome[index2];
+		else
+			chromosome[index+1] = toChange;
+
+		vector<bool> visited(GraphClass::vertex, false);
+		unsigned int dnaLen = 10;												//TODO: Zamienic 10 na jakies pole w klasie uzupelniane przy wczytywaniu pliku
+		for (int i = 0; i < index; i++)
+		{
+			visited[chromosome[i]] = true;
+			dnaLen += GraphClass::matrix[chromosome[i]][chromosome[i + 1]];
+		}
+		visited[index] = true;
+		chromosome.resize(GraphClass::vertex);
+		createChromosom(index + 1, visited, chromosome, dnaLen, false);
 	}
 }
 
