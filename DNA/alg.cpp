@@ -96,11 +96,13 @@ void GeneticClass::createChromosom(int j, vector <bool> &visited, vector<int> &c
 		int poprzednik = chrom[j - 1];
 		if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (!random))
 		{
+			if (nastepniki[poprzednik][0][0] == chrom[0])
+				cout << "MAM CIE !!!!!!\n";
 			chrom[j] = nastepniki[poprzednik][0][0];
 			dnaLen += nastepniki[poprzednik][0][1];
 			visited[chrom[j]] = true;
 		}
-		else if ((siz)) //Jesli najlepszy bedzie zajety to bierzemy nastepny nieodwiedzony z listy nastepnikow 
+		else if ((1>2)) //Jesli najlepszy bedzie zajety to bierzemy nastepny nieodwiedzony z listy nastepnikow 
 		{
 			int pos;
 			for (pos = 0; pos < siz; pos++)
@@ -108,6 +110,8 @@ void GeneticClass::createChromosom(int j, vector <bool> &visited, vector<int> &c
 				int pozycja = rand() % siz;
 				if ((!visited[nastepniki[poprzednik][pozycja][0]]))
 				{
+					if (nastepniki[poprzednik][0][0] == chrom[0])
+						cout << "MAM CIE 2 !!!!!!\n";
 					chrom[j] = nastepniki[poprzednik][pozycja][0];
 					dnaLen += nastepniki[poprzednik][pozycja][1];
 					visited[chrom[j]] = true;
@@ -136,8 +140,13 @@ void GeneticClass::DrawingPopulation(){
 	#pragma omp parallel for	
 	for (int i = 0; i < lc; i++){
 		vector <bool> visited(GraphClass::vertex,false);
-		do chromosom[i][0] = i % GraphClass::vertex;							//poczatkowy wierzcholek
+		chromosom[i][0] = i % GraphClass::vertex;							//poczatkowy wierzcholek
+		/* 
+			Wedlug mnie bez sensu bo jak nastepniki beda mialy size = 0 to petla bedzie nieskonczona bo zadna zmienna sie nie zmienia
+			Jak czasem sie zdazy chromosom o rozmiarze 1 to chyba nic nam nie szkodzi ;p 
+		do chromosom[i][0] = i % GraphClass::vertex;							
 		while (nastepniki[chromosom[i][0]].size() == 0);
+		*/
 		visited[chromosom[i][0]] = true;
 		unsigned int dnaLen = 10;											//TODO: zmienic 10 na jakas zmienna czy cos
 		int j = 1;
@@ -189,15 +198,14 @@ void GeneticClass::repair(vector <int> &chrom1, vector<int> &chrom2)
 	vector <bool> visited(GraphClass::vertex, false);
 	int dnaLen = 10;						//TODO: zamienic na zmienna
 	bool cut = false;
+	visited[chrom1[0]] = true;
 	for (int i = 1; i < chrom1.size(); i++)
 	{
-
 		if (visited[chrom1[i]])
 		{
 			cut = true;
 			for (int j = 0; j < nastepniki[chrom1[i - 1]].size(); j++)
 			{
-
 				if (!visited[nastepniki[chrom1[i - 1]][j][0]])
 				{
 					chrom1[i] = nastepniki[chrom1[i - 1]][j][0];
@@ -210,7 +218,7 @@ void GeneticClass::repair(vector <int> &chrom1, vector<int> &chrom2)
 		visited[chrom1[i]] = true;
 		if ((dnaLen > Loader::optimum) || (cut == true))
 		{
-			chrom1.resize(i);					//TODO: Resize do i-1 czy i-2 ??
+			chrom1.resize(i);					
 			break;
 		}
 	}
@@ -218,6 +226,7 @@ void GeneticClass::repair(vector <int> &chrom1, vector<int> &chrom2)
 	dnaLen = 10;
 	fill(visited.begin(), visited.end(), false);
 	cut = false;
+	visited[chrom2[0]] = true;
 	for (int i = 1; i < chrom2.size(); i++)
 	{
 		if (visited[chrom2[i]])
@@ -237,7 +246,7 @@ void GeneticClass::repair(vector <int> &chrom1, vector<int> &chrom2)
 		visited[chrom2[i]] = true;
 		if (dnaLen > Loader::optimum || (cut == true))
 		{
-			chrom2.resize(i - 1);				//TODO: Resize do i-1 czy i-2 ??
+			chrom2.resize(i - 1);				
 			break;
 		}
 	}
@@ -319,11 +328,11 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 void GeneticClass::Mutation(vector<int> &chromosome){
 	srand(time(NULL));
 	int length = chromosome.size();
-	int index = rand() % (length-1);
+	int index = rand() % (length);				//TODO: Jak length-1 == 0 to bedzie wyskakiwal wyjatek
 	int checkVertex = chromosome[index];
 	int successorsAmount = nastepniki[checkVertex].size();
 
-	if (GraphClass::matrix[checkVertex][chromosome[index + 1]] != nastepniki[checkVertex][0][1]) 
+	if ((index != length - 1) && (GraphClass::matrix[checkVertex][chromosome[index + 1]] != nastepniki[checkVertex][0][1]))
 		// Jezeli dla wylosowanego wierzcholka, nastepnik w chromosomie nie jest najlepszy to buduj od tego miejsca //TODO: mog¹ byæ powtórzenia !!!!!!!!!!!!!!!
 	{
 		vector<bool> visited(GraphClass::vertex, false);
@@ -340,6 +349,7 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 	else if (nastepniki[checkVertex][0][1] == nastepniki[checkVertex][1][1])
 		// jezeli ma 2 najlepsze nastepniki i nie bylo zmiany
 	{
+		cout << "MAM DWA NAJLEPSZE";
 		index++;
 		int index2 = -1;
 		int toChange = nastepniki[checkVertex][1][0];
@@ -490,9 +500,9 @@ void GeneticClass::Interface(){
 
 		chromosom.swap(children);						//zakomentowany swap bo zakomentowane krzyzowanie // 
 		
-		int mutationIteration = 50;
+		int mutationIteration = 100;
 		for (int i = 0; i<mutationIteration; i++){
-			int target = TournamentSelection(1000);
+			int target = TournamentSelection(10);
 			Mutation(chromosom[target]);			//	przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children 
 		}
 		checksRepeatsInSet();
