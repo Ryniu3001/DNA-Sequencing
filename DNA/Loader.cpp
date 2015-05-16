@@ -19,13 +19,19 @@ int getOptimum(string name){
 	size_t end = name.find("-");
 	if (end == string::npos)
 		end = name.find("+");
-
+	else {
+		size_t minus_end = name.rfind(".");
+		string number = name.substr(end+1, minus_end);
+		istringstream iss(number);
+		iss >> minus;
+	}
+	
 	begin++;
 	end -= 2;
 	string number = name.substr(begin, end);	
 	istringstream iss(number);
 	iss >> result;
-	result += 9;
+	result += 9 - minus;
 	cout << "Optimum: " << result << endl << endl;
 
 	return result;
