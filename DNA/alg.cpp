@@ -71,7 +71,7 @@ void GeneticClass::generateNastepniki(){
 	for (int i = 0; i <GraphClass::vertex; i++)		{
 		for (int j = 0; j < GraphClass::vertex; j++)
 		{
-			if (GraphClass::matrix[i][j] != 1000){
+			if (GraphClass::matrix[i][j] != 10){
 				vector<int> para(2);
 				para[0] = j;
 				para[1] = GraphClass::matrix[i][j];
@@ -344,7 +344,7 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 		}
 		visited[checkVertex] = true;
 		chromosome.resize(GraphClass::vertex);
-		createChromosom(index + 1, visited, chromosome, dnaLen, false);
+		createChromosom(index + 1, visited, chromosome, dnaLen, true);
 	} 
 	else if (nastepniki[checkVertex][0][1] == nastepniki[checkVertex][1][1])
 		// jezeli ma 2 najlepsze nastepniki i nie bylo zmiany
@@ -500,7 +500,7 @@ void GeneticClass::Interface(){
 
 		chromosom.swap(children);						//zakomentowany swap bo zakomentowane krzyzowanie // 
 		
-		int mutationIteration = 100;
+		int mutationIteration = 10;
 		for (int i = 0; i<mutationIteration; i++){
 			int target = TournamentSelection(10);
 			Mutation(chromosom[target]);			//	przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children 
