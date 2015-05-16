@@ -140,7 +140,7 @@ void GeneticClass::DrawingPopulation(){
 	#pragma omp parallel for	
 	for (int i = 0; i < lc; i++){
 		vector <bool> visited(GraphClass::vertex,false);
-		chromosom[i][0] = i % GraphClass::vertex;							//poczatkowy wierzcholek
+		chromosom[i][0] = rand() % GraphClass::vertex;							//poczatkowy wierzcholek
 		/* 
 			Wedlug mnie bez sensu bo jak nastepniki beda mialy size = 0 to petla bedzie nieskonczona bo zadna zmienna sie nie zmienia
 			Jak czasem sie zdazy chromosom o rozmiarze 1 to chyba nic nam nie szkodzi ;p 
