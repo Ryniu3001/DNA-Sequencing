@@ -1,32 +1,5 @@
 #include "alg.hpp"
 
-list<int> GeneticClass::createList(vector<int> chromosome){
-	list<int> lista;
-	for (int i = 0; i<GraphClass::vertex; i++){
-		lista.push_back(i);
-	}
-	return lista;
-}
-
-void GeneticClass::printList(list<int> lista){
-	for (list<int>::iterator iter = lista.begin(); iter != lista.end(); iter++)
-		cout << *iter << " ";
-	cout << endl;
-}
-
-int GeneticClass::removeFromList(int a, list<int> lista){
-	int value = 0;
-	if (lista.size() > 0){
-		list<int>::iterator iter = lista.begin();
-		for (int i = 0; i < a - 1; i++){
-			iter++;
-		}
-		value = *iter;
-		lista.erase(iter);
-	}
-	return value;
-}
-
 void showVector(vector<int> wektor){
 	for (int i = 0; i < wektor.size(); i++)
 		cout << wektor[i] << "  ";
@@ -346,10 +319,10 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 		chromosome.resize(GraphClass::vertex);
 		createChromosom(index + 1, visited, chromosome, dnaLen, false);
 	} 
-	else if (nastepniki[checkVertex][0][1] == nastepniki[checkVertex][1][1])
+	else if ((index != length - 1) && (nastepniki[checkVertex][0][1] == nastepniki[checkVertex][1][1]))
 		// jezeli ma 2 najlepsze nastepniki i nie bylo zmiany
 	{
-		cout << "MAM DWA NAJLEPSZE";
+		cout << "MAM DWA NAJLEPSZE" << endl;
 		index++;
 		int index2 = -1;
 		int toChange = nastepniki[checkVertex][1][0];
@@ -410,9 +383,10 @@ int GeneticClass::Rating()
 
 void GeneticClass::showBest(){
 	int dnaLength = printBest();
-
+	double procent = (100.0 * bestScoreInAll) / (Loader::optimum - 9);
 	cout << endl << "Uzyskany najlepszy wynik: " << bestScoreInAll << endl;
 	cout << "Uzyskana dlugosc DNA: " << dnaLength << endl;
+	cout << "Uzyskany procent: " << procent << "% " << endl;
 	cout << "-------------------------------" << endl << endl;
 
 	Saver::dnaLength = dnaLength;
@@ -476,7 +450,7 @@ void GeneticClass::checksRepeatsInSet(){
 void GeneticClass::Interface(){
 	lc = 1000;                        
 
-	int algorithmIteration = 30;
+	int algorithmIteration = 1;
 	int score = 0, parent1, parent2;
 
 	DrawingPopulation();
