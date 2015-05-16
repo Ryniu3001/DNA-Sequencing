@@ -13,7 +13,7 @@ void GraphClass::create(){
 	for (int i = 0; i < vertex; i++){
 		vector<int> row;
 		for (int j = 0; j < vertex; j++)
-			row.push_back(1000);
+			row.push_back(10);					//TODO: zamienic 10 na jakas zmienna
 		matrix.push_back(row);
 	}
 };

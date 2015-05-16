@@ -151,7 +151,7 @@ void GeneticClass::DrawingPopulation(){
 		unsigned int dnaLen = 10;											//TODO: zmienic 10 na jakas zmienna czy cos
 		int j = 1;
 
-		createChromosom(j, visited, chromosom[i], dnaLen, !(i<10));			//losowo - true, deterministycznie - !(i < GraphClass::vertex)
+		createChromosom(j, visited, chromosom[i], dnaLen, !(i<(GraphClass::vertex * 0.01)));			//losowo - true, deterministycznie - !(i < GraphClass::vertex)
 	}
 }	
 
