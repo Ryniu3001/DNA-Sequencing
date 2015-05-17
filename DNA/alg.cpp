@@ -446,7 +446,7 @@ void GeneticClass::checksRepeatsInSet(){
 void GeneticClass::Interface(){
 	lc = 1000;                        
 
-	int algorithmIteration = 1;
+	int algorithmIteration = 30;
 	int score = 0, parent1, parent2;
 
 	DrawingPopulation();
@@ -458,14 +458,34 @@ void GeneticClass::Interface(){
 	for (int z = 0; z<algorithmIteration; z++){
 		int P = -1;		                            // licznik nowej populacji
 		
+		float crossoverRatio = 0.3;
+		vector<bool> crossed(lc,false);
+		int crossoverIterations = (lc - 2) * crossoverRatio;
 		#pragma omp parallel for
-		for(P = -1; P < lc - 2; P += 2)
+		for (P = -1; P < crossoverIterations; P += 2)
 		{
 			parent1 = TournamentSelection(10);
 			do
 				parent2 = TournamentSelection(10);
 			while (parent1 == parent2);
+			crossed[parent1] = true;
+			crossed[parent2] = true;
 			Crossover(parent1, parent2, children[P + 1], children[P + 2]);
+		}
+
+		for (int i = 0 ; i < lc; i++)					//Dopisuje do children osobniki ktore nie braly udzialu w krzyzowaniu
+		{
+			if (crossoverIterations != lc)
+			{
+				if (crossed[i] == false)
+				{
+					children[crossoverIterations++] = chromosom[i];
+				}
+			}
+			else
+			{
+				break;
+			}
 		}
 
 		chromosom.swap(children);						
