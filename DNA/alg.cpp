@@ -69,13 +69,11 @@ void GeneticClass::createChromosom(int j, vector <bool> &visited, vector<int> &c
 		int poprzednik = chrom[j - 1];
 		if ((siz) && (!visited[nastepniki[poprzednik][0][0]]) && (!random))
 		{
-			if (nastepniki[poprzednik][0][0] == chrom[0])
-				cout << "MAM CIE !!!!!!\n";
 			chrom[j] = nastepniki[poprzednik][0][0];
 			dnaLen += nastepniki[poprzednik][0][1];
 			visited[chrom[j]] = true;
 		}
-		else if ((1>2)) //Jesli najlepszy bedzie zajety to bierzemy nastepny nieodwiedzony z listy nastepnikow 
+		else if ((siz)) //Jesli najlepszy bedzie zajety to bierzemy nastepny nieodwiedzony z listy nastepnikow 
 		{
 			int pos;
 			for (pos = 0; pos < siz; pos++)
@@ -83,8 +81,6 @@ void GeneticClass::createChromosom(int j, vector <bool> &visited, vector<int> &c
 				int pozycja = rand() % siz;
 				if ((!visited[nastepniki[poprzednik][pozycja][0]]))
 				{
-					if (nastepniki[poprzednik][0][0] == chrom[0])
-						cout << "MAM CIE 2 !!!!!!\n";
 					chrom[j] = nastepniki[poprzednik][pozycja][0];
 					dnaLen += nastepniki[poprzednik][pozycja][1];
 					visited[chrom[j]] = true;
@@ -472,7 +468,7 @@ void GeneticClass::Interface(){
 			Crossover(parent1, parent2, children[P + 1], children[P + 2]);
 		}
 
-		chromosom.swap(children);						//zakomentowany swap bo zakomentowane krzyzowanie // 
+		chromosom.swap(children);						
 		
 		int mutationIteration = 10;
 		for (int i = 0; i<mutationIteration; i++){
