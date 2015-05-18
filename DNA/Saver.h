@@ -7,6 +7,7 @@
 #include <iostream>
 #include <ctime>
 #include <sstream>
+#include "Loader.h"
 
 using namespace std;
 
@@ -27,6 +28,7 @@ private:
 	clock_t stop;
 	double time;
 	ofstream out;
+	double procent;
 
 	void saveToFile();
 

@@ -8,7 +8,7 @@ void Saver::write(){
 	stop = clock();
 	time = (stop - start) / (double)(CLOCKS_PER_SEC / 1000);
 	count++;
-	
+	procent = (100.0 * result) / (Loader::optimum - 9);
 	saveToFile();
 }
 
@@ -31,6 +31,7 @@ void Saver::saveToFile(){
 	out << time << "ms" << endl;
 	out << "U¿ytych: " << result << endl;
 	out << "D³ugoœæ: " << dnaLength << endl;
+	out << "Procent: " << procent << endl;
 	out << "-------------------------------" << endl;
 
 	out.close();

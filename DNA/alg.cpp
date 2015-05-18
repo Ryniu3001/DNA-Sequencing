@@ -235,7 +235,7 @@ int getWorst(vector<int> chromosome){
 
 //Poprzednia mutacja
 void GeneticClass::makeBetterMutation(vector<int> &chromosome){
-
+	cout << "mutacja extra" << endl; 
 
 	int index1 = -1;
 	int index2 = -1;
@@ -295,7 +295,8 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 	int successorsAmount = nastepniki[checkVertex].size();
 
 	bool sterowane = false;
-	if ((rand() % 10) == 0)
+	int los = rand() % 10;
+	if (los == 9)
 		sterowane = true;
 
 	if (!sterowane && (index != length - 1) && (GraphClass::matrix[checkVertex][chromosome[index + 1]] != nastepniki[checkVertex][0][1]))
@@ -327,8 +328,8 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 			}
 		}
 
-		if (index2 > 0){												
-			if (index < index2)												
+		if (index2 > 0){
+			if (index < index2)
 				chromosome[index] = chromosome[index2];
 			else{															// jesli jest przed obecnym indexem to zamieniamy we wczesniejszym miejscu w chromosomie
 				chromosome[index2] = chromosome[index];
@@ -445,7 +446,7 @@ void GeneticClass::checksRepeatsInSet(){
 void GeneticClass::Interface(){
 	lc = 1000;                        
 
-	int algorithmIteration = 30;
+	int algorithmIteration = 10;
 	int score = 0, parent1, parent2;
 
 	DrawingPopulation();
@@ -460,7 +461,7 @@ void GeneticClass::Interface(){
 		float crossoverRatio = 0.3;
 		vector<bool> crossed(lc,false);
 		int crossoverIterations = (lc - 2) * crossoverRatio;
-		#pragma omp parallel for
+#pragma omp parallel for
 		for (P = -1; P < crossoverIterations; P += 2)
 		{
 			parent1 = TournamentSelection(10);
@@ -500,8 +501,6 @@ void GeneticClass::Interface(){
 		score = Rating();
 		cout << "Populacja_" << z << " = " << score << endl;
 	}
-
-//	Mutation(path);
 	showBest();
 }
 

@@ -14,24 +14,40 @@ vector<string> Loader::fileNames = initializer_list<string>();
 
 int getOptimum(string name){
 	int result = -1;
-	int minus = 0;
+	int minus = 0, plus = 0;
 	size_t begin = name.find(".");
-	size_t end = name.find("-");
-	if (end == string::npos)
-		end = name.find("+");
-	else {
-		size_t minus_end = name.rfind(".");
-		string number = name.substr(end+1, minus_end);
+	size_t end_minus = name.find("-");
+	size_t end_plus = name.find("+");
+	int end;
+	if (end_minus != string::npos)
+		end = end_minus;
+	else
+		end = end_plus;
+	begin++;
+
+	{
+		string number = name.substr(begin, (end - begin));
+		istringstream iss(number);
+		iss >> result;
+	}
+
+	int  size = name.length();
+	if ((end_minus != string::npos) && (end_plus != string::npos))
+	{
+		end_minus++;
+		string number = name.substr(end_minus, (end_plus - end_minus));
 		istringstream iss(number);
 		iss >> minus;
 	}
-	
-	begin++;
-	end -= 2;
-	string number = name.substr(begin, end);	
-	istringstream iss(number);
-	iss >> result;
-	result += 9 - minus;
+	else if (end_minus != string::npos)
+	{
+		end_minus++;
+		string number = name.substr(end_minus, (size - end_plus));
+		istringstream iss(number);
+		iss >> minus;
+	} 
+
+	result += 9 + plus - minus;
 	cout << "Optimum: " << result << endl << endl;
 
 	return result;
