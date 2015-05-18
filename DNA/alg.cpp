@@ -288,7 +288,6 @@ void GeneticClass::makeBetterMutation(vector<int> &chromosome){
 }
 
 void GeneticClass::Mutation(vector<int> &chromosome){
-	srand(time(NULL));
 	int length = chromosome.size();
 	int index = rand() % (length);				//TODO: Jak length-1 == 0 to bedzie wyskakiwal wyjatek
 	int checkVertex = chromosome[index];
@@ -379,7 +378,7 @@ int GeneticClass::Rating()
 
 void GeneticClass::showBest(){
 	int dnaLength = printBest();
-	double procent = (100.0 * bestScoreInAll) / (Loader::optimum - 9);
+	double procent = (100.0 * bestScoreInAll) / (Loader::maxUsed);
 	cout << endl << "Uzyskany najlepszy wynik: " << bestScoreInAll << endl;
 	cout << "Uzyskana dlugosc DNA: " << dnaLength << endl;
 	cout << "Uzyskany procent: " << procent << "% " << endl;
