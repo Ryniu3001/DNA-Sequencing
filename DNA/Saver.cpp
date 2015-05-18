@@ -8,7 +8,7 @@ void Saver::write(){
 	stop = clock();
 	time = (stop - start) / (double)(CLOCKS_PER_SEC / 1000);
 	count++;
-	procent = (100.0 * result) / (Loader::optimum - 9);
+	procent = (100.0 * result) / (Loader::maxUsed);
 	saveToFile();
 }
 

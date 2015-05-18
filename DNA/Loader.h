@@ -15,11 +15,12 @@ static class Loader
 
 public:
 	static int optimum;
+	static int maxUsed;
 	static vector<string> readFromFile(string fileName);
 
 	static void getFileNames();
 	static vector<string> fileNames;	
-
+	static void countOptimum(string name);
 	Loader();
 	~Loader();
 

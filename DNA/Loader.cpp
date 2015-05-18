@@ -10,11 +10,12 @@ Loader::~Loader()
 }
 
 int Loader::optimum = 0;
+int Loader::maxUsed = 0;
 vector<string> Loader::fileNames = initializer_list<string>();
 
-int getOptimum(string name){
-	int result = -1;
-	int minus = 0, plus = 0;
+void Loader::countOptimum(string name){
+	int result;
+	int minus = 0;
 	size_t begin = name.find(".");
 	size_t end_minus = name.find("-");
 	size_t end_plus = name.find("+");
@@ -46,11 +47,10 @@ int getOptimum(string name){
 		istringstream iss(number);
 		iss >> minus;
 	} 
+	Loader::optimum = result + 9;
+	Loader::maxUsed = result - minus;
 
-	result += 9 + plus - minus;
-	cout << "Optimum: " << result << endl << endl;
-
-	return result;
+	cout << "Optimum: " << Loader::optimum << endl << endl;
 }
 
 vector<string> Loader::readFromFile(string fileName){
@@ -63,7 +63,7 @@ vector<string> Loader::readFromFile(string fileName){
 			data.push_back(line);
 	}
 	cout << "Plik:" << "\t " << fileName << endl;
-	Loader::optimum = getOptimum(fileName);
+	countOptimum(fileName);
 
 	return data;
 }
