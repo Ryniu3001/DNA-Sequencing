@@ -234,8 +234,7 @@ int getWorst(vector<int> chromosome){
 }
 
 //Poprzednia mutacja
-/*
-void GeneticClass::Mutation(vector<int> &chromosome){
+void GeneticClass::makeBetterMutation(vector<int> &chromosome){
 
 
 	int index1 = -1;
@@ -285,14 +284,8 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 		}
 		chromosome.resize(GraphClass::vertex);
 		createChromosom(index1 + 1, visited, chromosome, rate, false);
-	}
-
-	//	for (int i = 0; i < chromosome.size(); i++)
-	//cout << chromosome[i] << "  ";
-	//cout << endl;
-	
+	}	
 }
-*/
 
 void GeneticClass::Mutation(vector<int> &chromosome){
 	srand(time(NULL));
@@ -301,7 +294,11 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 	int checkVertex = chromosome[index];
 	int successorsAmount = nastepniki[checkVertex].size();
 
-	if ((index != length - 1) && (GraphClass::matrix[checkVertex][chromosome[index + 1]] != nastepniki[checkVertex][0][1]))
+	bool sterowane = false;
+	if ((rand() % 10) == 0)
+		sterowane = true;
+
+	if (!sterowane && (index != length - 1) && (GraphClass::matrix[checkVertex][chromosome[index + 1]] != nastepniki[checkVertex][0][1]))
 		// Jezeli dla wylosowanego wierzcholka, nastepnik w chromosomie nie jest najlepszy to buduj od tego miejsca //TODO: mog¹ byæ powtórzenia !!!!!!!!!!!!!!!
 	{
 		vector<bool> visited(GraphClass::vertex, false);
@@ -352,6 +349,8 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 		chromosome.resize(GraphClass::vertex);
 		createChromosom(index + 1, visited, chromosome, dnaLen, false);
 	}
+	else if (sterowane)
+		makeBetterMutation(chromosome);
 }
 
 int GeneticClass::Rating()
@@ -492,9 +491,10 @@ void GeneticClass::Interface(){
 		
 		int mutationIteration = 10;
 		for (int i = 0; i<mutationIteration; i++){
-			int target = TournamentSelection(10);
+			int target = TournamentSelection(100);
 			Mutation(chromosom[target]);			//	przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children 
 		}
+
 		checksRepeatsInSet();
 	
 		score = Rating();

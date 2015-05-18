@@ -35,6 +35,7 @@ private:
 	void Crossover(int par1, int par2, vector<int> &child1, vector<int> &child2);
 	void repair(vector <int> &chrom1, vector<int> &chrom2);
 	void Mutation(vector<int> &chomosome);
+	void makeBetterMutation(vector<int> &chromosome);
 	int TournamentSelection(int x);		//x - liczba chromosow w turnieju
 	void showBest();
 	int printBest();
