@@ -233,10 +233,7 @@ int getWorst(vector<int> chromosome){
 	return worst;
 }
 
-//Poprzednia mutacja
 void GeneticClass::makeBetterMutation(vector<int> &chromosome){
-	cout << "mutacja extra" << endl; 
-
 	int index1 = -1;
 	int index2 = -1;
 	int node = -1;
@@ -267,8 +264,14 @@ void GeneticClass::makeBetterMutation(vector<int> &chromosome){
 	}
 
 	if (index1 >= 0){
-		if (index2 > 0)
-			chromosome[index1] = chromosome[index2];
+		if (index2 > 0){
+			if (index1 < index2)
+				chromosome[index1] = chromosome[index2];
+			else{															// jesli jest przed obecnym indexem to zamieniamy we wczesniejszym miejscu w chromosomie
+				chromosome[index2] = chromosome[index1];
+				index1 = index2;												// miejsce dla visited
+			}
+		}
 		else
 			chromosome[index1] = node;
 
@@ -315,7 +318,7 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 	else if ((index != length - 1) && (nastepniki[checkVertex][0][1] == nastepniki[checkVertex][1][1]))
 		// jezeli ma 2 najlepsze nastepniki i nie bylo zmiany
 	{
-		cout << "MAM DWA NAJLEPSZE" << endl;
+	//	cout << "MAM DWA NAJLEPSZE" << endl;
 		index++;
 		int index2 = -1;
 		int toChange = nastepniki[checkVertex][1][0];
