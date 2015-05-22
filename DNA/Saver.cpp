@@ -34,13 +34,10 @@ Saver::~Saver()
 void Saver::saveToFile(){
 	string name = ".\\testy\\Testy" + to_string(count) + ".txt";
 	ofstream out(name);
-	out << "-------------------------------" << endl;
-	out << file << endl;
-	out << time << "ms" << endl;
-	out << "U¿ytych: " << result << endl;
-	out << "D³ugoœæ: " << dnaLength << endl;
-	out << "Procent: " << procent << endl;
-	out << "-------------------------------" << endl;
-
+	out << "Plik" << "\t" << file << endl;
+	out << "Czas [ms]" << "\t" << time << endl;
+	out << "U¿ytych " << "\t" << result << endl;
+	out << "D³ugoœæ " << "\t" << dnaLength << endl;
+	out << "Procent " << "\t" << procent << endl;
 	out.close();
 }

@@ -40,7 +40,6 @@ private:
 	void showBest();
 	int printBest();
 
-	void checksRepeatsInChromosom();
 	void checksRepeatsInSet();
 	void createChromosom(int j, vector <bool> &visited, vector<int> &chrom, int dnaLen, bool random);
 

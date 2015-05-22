@@ -264,7 +264,7 @@ void GeneticClass::makeBetterMutation(vector<int> &chromosome){
 	}
 
 	if (index1 >= 0){
-		if (index2 > 0){
+		if (index2 >= 0){
 			if (index1 < index2)
 				chromosome[index1] = chromosome[index2];
 			else{															// jesli jest przed obecnym indexem to zamieniamy we wczesniejszym miejscu w chromosomie
@@ -407,25 +407,6 @@ int GeneticClass::printBest(){
 	return dnaLength;
 }
 
-
-void GeneticClass::checksRepeatsInChromosom(){
-	cout << "SPRAWDZAMY POWTORZENIA IN CHROMOSOM ... ";
-	for (int i = 0; i < lc; i++){
-		for (int j = i + 1; j < lc; j++){
-			bool noRepeat = false;
-			for (int k = 0; k < GraphClass::vertex; k++){
-				if (chromosom[i][k] != chromosom[j][k]){
-					noRepeat = true;
-					break;
-				}
-			}
-			if (!noRepeat)
-				cout << endl << "Chromosomy takie same to: " << i << " oraz " << j << endl;
-		}
-	}
-	cout << "KONIEC" << endl;
-}
-
 void GeneticClass::checksRepeatsInSet(){
 //	cout << "SPRAWDZAMY POWTORZENIA IN SET ... ";
 	for (int i = 0; i < lc; i++){
@@ -446,9 +427,11 @@ void GeneticClass::checksRepeatsInSet(){
 
 ///////////////////////////////  INTERFACE  ////////////////////////////////
 void GeneticClass::Interface(){
-	lc = 1000;                        
+	lc = 10000;             
+	int algorithmIteration = 30;
+	float crossoverRatio = 0.9;
+	int mutationIteration = 1000;
 
-	int algorithmIteration = 10;
 	int score = 0, parent1, parent2;
 
 	DrawingPopulation();
@@ -459,11 +442,9 @@ void GeneticClass::Interface(){
 	////////////// SELEKCJA I KRZYZOWANIE I MUTACJA///////////////////////////////
 	for (int z = 0; z<algorithmIteration; z++){
 		int P = -1;		                            // licznik nowej populacji
-		
-		float crossoverRatio = 0.3;
 		vector<bool> crossed(lc,false);
 		int crossoverIterations = (lc - 2) * crossoverRatio;
-#pragma omp parallel for
+		#pragma omp parallel for
 		for (P = -1; P < crossoverIterations; P += 2)
 		{
 			parent1 = TournamentSelection(10);
@@ -475,24 +456,19 @@ void GeneticClass::Interface(){
 			Crossover(parent1, parent2, children[P + 1], children[P + 2]);
 		}
 
-		for (int i = 0 ; i < lc; i++)					//Dopisuje do children osobniki ktore nie braly udzialu w krzyzowaniu
-		{
-			if (crossoverIterations != lc)
-			{
-				if (crossed[i] == false)
-				{
+		for (int i = 0 ; i < lc; i++) {					//Dopisuje do children osobniki ktore nie braly udzialu w krzyzowaniu
+			if (crossoverIterations != lc) {
+				if (crossed[i] == false) {
 					children[crossoverIterations++] = chromosom[i];
 				}
 			}
-			else
-			{
+			else {
 				break;
 			}
 		}
 
 		chromosom.swap(children);						
 		
-		int mutationIteration = 10;
 		for (int i = 0; i<mutationIteration; i++){
 			int target = TournamentSelection(100);
 			Mutation(chromosom[target]);			//	przy zakomentowanym krzyzowaniu wpisalem tu chromosom zamiast children 
