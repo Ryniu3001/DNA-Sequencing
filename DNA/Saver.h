@@ -17,6 +17,9 @@ public:
 	static int result;
 	static int dnaLength;
 	static int count;
+	static double average;
+	static double minimum;
+	static void rate();
 	
 	void write();
 	Saver(string fileName);

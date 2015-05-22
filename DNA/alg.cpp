@@ -315,7 +315,7 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 		chromosome.resize(GraphClass::vertex);
 		createChromosom(index + 1, visited, chromosome, dnaLen, true);
 	} 
-	else if ((index != length - 1) && (nastepniki[checkVertex][0][1] == nastepniki[checkVertex][1][1]))
+/*	else if ((index != length - 1) && (nastepniki[checkVertex][0][1] == nastepniki[checkVertex][1][1]))
 		// jezeli ma 2 najlepsze nastepniki i nie bylo zmiany
 	{
 	//	cout << "MAM DWA NAJLEPSZE" << endl;
@@ -352,7 +352,7 @@ void GeneticClass::Mutation(vector<int> &chromosome){
 		chromosome.resize(GraphClass::vertex);
 		createChromosom(index + 1, visited, chromosome, dnaLen, false);
 	}
-	else if (sterowane)
+*/	else if (sterowane)
 		makeBetterMutation(chromosome);
 }
 

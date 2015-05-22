@@ -26,6 +26,9 @@ int main()
 
 		saver->write();
 	}
+
+	Saver::rate();
+
 	cin.get(); 
     return 0;
 }
