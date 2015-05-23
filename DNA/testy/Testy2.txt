@@ -1,5 +1,5 @@
 Plik	10.500+50
-Czas [ms]	3741
-U¿ytych 	443
-D³ugoœæ 	507
-Procent 	88.6
+Czas [ms]	3630
+U¿ytych 	454
+D³ugoœæ 	509
+Procent 	90.8

@@ -245,8 +245,11 @@ void GeneticClass::makeBetterMutation(vector<int> &chromosome){
 		for (int j = 0; j < size; j++){
 			if (nastepniki[current][j][0] == next){
 				if (nastepniki[current][j][1] == nastepniki[current][j + 1][1]){
-					node = nastepniki[current][j + 1][0];
-					break;
+					int los = rand() % 3;
+					if (los == 2){
+						node = nastepniki[current][j + 1][0];
+						break;
+					}
 				}
 			}
 		}
